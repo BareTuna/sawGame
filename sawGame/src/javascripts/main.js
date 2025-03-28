@@ -13,6 +13,7 @@ const SURVIVEOVER = 6;
 //enemy types
 const CHASER = 0;
 const BULLET = 1;
+const STANDER = 2;
 let scene = MENU;
 let menuButtons = [new Button(200,200,150,25,"Time trial",() => {
 	scene = TIMETRIAL
@@ -65,8 +66,14 @@ function draw() {
 
 function ttOverDraw(){
 	textAlign(CENTER);
-	text("NICE TRY KID", 200,200);
-	text(score, 200,220);
+	push();
+	fill(255,255,255);
+	strokeWeight(2);
+	rectMode(CENTER);
+	rect(200, 260, 80, 20);
+	fill(0);
+	text("Score: " + score, 190, 264)
+	pop();
 	for(let i = 0; i < ttOverButtons.length; i++){
 		ttOverButtons[i].show();
 	}
@@ -99,14 +106,27 @@ function timeTrialDraw(){
 	saw.update();
 	player.show();
 	player.update();
-	text(score, 200,200);
-	text(Math.round(ttTimer / 60.0), 200, 220);
+	
 	for(let i = 0; i < enemies.length; i ++){
 		enemies[i].show();
 		if(!player.hasSaw){
 			enemies[i].check(saw.x,saw.y);
 		}
 	}
+
+	push();
+	noFill();
+	rect(10,10,100,20);
+	fill(255,0,0)
+	// rect(10,10,Math.round(ttTimer / 60.0) * (100 / Math.round(1141 / 60.0)),20);
+	rect(10,10,ttTimer * (100 / 1141),20);
+	fill(255,255,255);
+	strokeWeight(2);
+	rect(322, 10, 80, 20);
+	fill(0);
+	text("Score: " + score, 350, 25)
+	pop(); 
+
 	if(saw.check(player.x, player.y)){
 		saw.speed = 0;
 		saw.gotFar = false;
@@ -125,20 +145,25 @@ function timeTrialDraw(){
 		saw.y = 200;
 		scene = TTOVER;
 	}
+
 }
 
 function surviveDraw(){
 	if(ttTimer <= 0){
 		ttTimer += spawnTime;
 		let v2 = goToward(200,200,random(20,380),random(20,380));
-		v2.mult(300);
-		spawn(v2.x + 200, v2.y + 200, BULLET)
+		if(Math.random() > 0.5){
+			v2.mult(300);
+			spawn(v2.x + 200, v2.y + 200, BULLET);
+		}else{
+			v2.mult(225);
+			spawn(v2.x + 200, v2.y + 200, CHASER);
+		}
 	}
 	saw.show();
 	saw.update();
 	player.show();
 	player.update();
-	text(score, 200, 200);
 	for(let i = 0; i < enemies.length; i ++){
 		enemies[i].show();
 		enemies[i].update(player.x, player.y);
@@ -146,11 +171,18 @@ function surviveDraw(){
 			scene = SURVIVEOVER;
 		}
 		if(!player.hasSaw){
-			if(enemies[i].check(saw.x,saw.y)){
-				score++;
+			if(enemies[i].type == CHASER && enemies[i].check(saw.x,saw.y)){
+				spawnTime -= 0.2;
 			}
 		}
 	}
+	push();
+	fill(255,255,255);
+	strokeWeight(2);
+	rect(322, 10, 80, 20);
+	fill(0);
+	text("Score: " + score, 350, 25);
+	pop();
 	if(saw.check(player.x, player.y)){
 		saw.speed = 0;
 		saw.gotFar = false;
@@ -165,9 +197,14 @@ function surviveDraw(){
 
 function surviveOverDraw(){
 	enemies = [];
-	textAlign(CENTER);
-	text("NICE TRY", 200,200);
-	text(score, 200,220);
+	push();
+	fill(255,255,255);
+	strokeWeight(2);
+	rectMode(CENTER);
+	rect(200, 260, 80, 20);
+	fill(0);
+	text("Score: " + score, 190, 264)
+	pop();
 	for(let i = 0; i < surviveOverButtons.length; i++){
 		surviveOverButtons[i].show();
 	}
@@ -204,7 +241,7 @@ function mousePressed(){
 function kill(j){
 	enemies.splice(j,1);
 	if(scene == TIMETRIAL) {
-		spawn(random(20,380), random(20,380));
+		spawn(random(20,380), random(20,380), STANDER);
 	}
 	for(let i = 0; i < enemies.length; i ++){
 	    enemies[i].id = i;
@@ -221,6 +258,8 @@ function spawn(x,y,type){
 		v2.x += 200;
 		v2.y += 200;
 		enemies.push(new Enemy(x,y,0,BULLET,player.x, player.y));
+	}else{
+		enemies.push(new Enemy(x,y,0,STANDER));
 	}
 	for(let i = 0; i < enemies.length; i ++){
 	    enemies[i].id = i;
@@ -229,7 +268,7 @@ function spawn(x,y,type){
 
 
 function keyPressed() {
-  if (keyCode === 32) {
+  if (keyCode === 32) { //space
     if(scene == TTOVER){
 		scene = TIMETRIAL;
 	}
