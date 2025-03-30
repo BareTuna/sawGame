@@ -36,8 +36,15 @@ class Enemy{
 			kill(this.id);
 			return true;
 		}else{
+			if(this.type == BULLET){
+				if(dist(this.x, this.y, 200,200) >= 500){
+					kill(this.id);
+				}
+			}
 			return false;
 		}
+
+		
 	}
 	update(x,y){
 		if(this.type == CHASER){

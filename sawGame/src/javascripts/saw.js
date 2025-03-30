@@ -3,10 +3,11 @@ class Saw{
 		this.x = x;
 		this.y = y;
 		this.w = 20;
-		this.xSpeed = 4;
-		this.ySpeed = 4;
+		this.xSpeed = 4.5;
+		this.ySpeed = 4.5;
 		this.going = false;
 		this.gotFar = false;
+		this.return = false;
 	}
 	update(){
 		let hit = false;
@@ -35,8 +36,8 @@ class Saw{
 		this.y += this.ySpeed;
 		
 		if(hit == true){
-			this.ySpeed *= 0.50;
-			this.xSpeed *= 0.50;
+			this.ySpeed *= 0.60;
+			this.xSpeed *= 0.60;
 		}
 		if(dist(this.x,this.y,player.x,player.y) > 40){
 			this.gotFar = true;
@@ -49,10 +50,20 @@ class Saw{
 		
 		if(this.going){
 			let cringe = goToward(this.x,this.y,player.x,player.y);
-			this.xSpeed = cringe.x * 3;
-			this.ySpeed = cringe.y * 3;
+			this.xSpeed = cringe.x * 4.5;
+			this.ySpeed = cringe.y * 4.5;
 		}
+
 		this.going = false;
+
+		if(this.return){
+			let cringe = goToward(this.x,this.y,player.x,player.y);
+			this.xSpeed = cringe.x * 7;
+			this.ySpeed = cringe.y * 7;
+			if((dist(this.x,this.y,player.x,player.y) < 40 && this.gotFar) || player.hasSaw == true){
+				this.return = false;
+			}
+		}
 	}
 	check(x,y){
 		if(dist(this.x,this.y,x,y) < 20){
