@@ -19,7 +19,7 @@ class Enemy{
 		
 	}
 	show(){
-        if(this.type == CHASER){
+        if(this.type == CHASER || this.type == STANDER){
 		    push();
 		    rectMode(CENTER);
 		    rect(this.x,this.y, this.w, this.w);

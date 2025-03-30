@@ -16,7 +16,12 @@ const BULLET = 1;
 const STANDER = 2;
 let scene = MENU;
 let menuButtons = [new Button(200,200,150,25,"Time trial",() => {
-	scene = TIMETRIAL
+	scene = TIMETRIAL;
+	ttTimer = 0;
+	score = 0;
+	player.hasSaw = true;
+	player.x = 200;
+	player.y = 200;
 	for(let i = 0; i < 3; i ++){
 		enemies.push(new Enemy(random(20,380), random(20,380),i, CHASER));
 	}
