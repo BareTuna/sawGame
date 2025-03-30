@@ -32,6 +32,7 @@ let surviveOverButtons = [new Button(200,300,150,25,"Try Again? (space)",() => {
 	player.hasSaw = true;
 	player.x = 200;
 	player.y = 200;
+	spawnTime = 50;
 }), new Button(200,335,100,25,"Menu", () => scene = MENU)]
 let ttTimer = 0;
 let spawnTime = 50;
@@ -237,6 +238,8 @@ function mousePressed(){
 			surviveOverButtons[i].check(mouseX,mouseY);
 		}
 	}
+
+	console.log(spawnTime);
 }
 function kill(j){
 	enemies.splice(j,1);
@@ -273,11 +276,7 @@ function keyPressed() {
 		scene = TIMETRIAL;
 	}
 	if(scene == SURVIVEOVER){
-		scene = SURVIVE;
-		score = 0;
-		player.hasSaw = true;
-		player.x = 200;
-		player.y = 200;
+		surviveOverButtons[0].f();
 	}
   }
 }
