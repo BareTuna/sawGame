@@ -158,12 +158,19 @@ function surviveDraw(){
 	if(ttTimer <= 0){
 		ttTimer += spawnTime;
 		let v2 = goToward(200,200,random(20,380),random(20,380));
-		if(Math.random() > 0.5){
-			v2.mult(300);
-			spawn(v2.x + 200, v2.y + 200, BULLET);
-		}else{
+		v2.mult(225);
+		v2.x += 200;
+		v2.y += 200;
+		while(dist(player.x, player.y, v2.x, v2.y) <= 250){
+			v2 = goToward(200,200,random(20,380),random(20,380));
 			v2.mult(225);
-			spawn(v2.x + 200, v2.y + 200, CHASER);
+			v2.x += 200;
+			v2.y += 200;
+		}
+		if(Math.random() > 0.5){
+			spawn(v2.x, v2.y, BULLET);
+		}else{
+			spawn(v2.x, v2.y, CHASER);
 		}
 	}
 	saw.show();
@@ -244,7 +251,6 @@ function mousePressed(){
 		}
 	}
 
-	console.log(spawnTime);
 }
 function kill(j){
 	enemies.splice(j,1);
@@ -261,10 +267,10 @@ function spawn(x,y,type){
 	if(type == CHASER){
 		enemies.push(new Enemy(x,y,0,CHASER));
 	}else if(type == BULLET){
-		let v2 = goToward(player.x, player.y,x,y);
-		//v2.mult(300);
-		v2.x += 200;
-		v2.y += 200;
+		// let v2 = goToward(player.x, player.y,x,y);
+		// //v2.mult(300);
+		// v2.x += 200;
+		// v2.y += 200;
 		enemies.push(new Enemy(x,y,0,BULLET,player.x, player.y));
 	}else{
 		enemies.push(new Enemy(x,y,0,STANDER));
