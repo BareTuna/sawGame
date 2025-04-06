@@ -4,6 +4,7 @@ let saw = new Saw(200, 200);
 let enemies = [];
 let score = 0;
 let enemyIdle;
+// scenes
 const MENU = 1;
 const TIMETRIAL = 2;
 const TTOVER = 3;
@@ -14,7 +15,12 @@ const SURVIVEOVER = 6;
 const CHASER = 0;
 const BULLET = 1;
 const STANDER = 2;
+//powerup types
+const RETURNER = 0;
+const FLASH = 1;
+const BLASTER = 2;
 let scene = MENU;
+let letChoose = false;
 let menuButtons = [new Button(200, 200, 150, 25, "Time trial", () => {
 	scene = TIMETRIAL;
 	ttTimer = 0;
@@ -35,6 +41,9 @@ let menuButtons = [new Button(200, 200, 150, 25, "Time trial", () => {
 	spawnTime = 50;
 	breatheTimer = -1;
 	enemies = [];
+	fieldPowerups = [];
+	heldPowerups = [];
+	stage = 0;
 })];
 let ttOverButtons = [new Button(200, 300, 150, 25, "Try Again? (space)", () => scene = TIMETRIAL), new Button(200, 335, 100, 25, "Menu", () => scene = MENU)];
 let levelButtons = [new Button(200, 300, 150, 25, "Menu", () => scene = MENU)];
@@ -47,16 +56,25 @@ let surviveOverButtons = [new Button(200, 300, 150, 25, "Try Again? (space)", ()
 	spawnTime = 50;
 	breatheTimer = -1;
 	enemies = [];
+	fieldPowerups = [];
+	heldPowerups = [];
+	stage = 0;
 }), new Button(200, 335, 100, 25, "Menu", () => scene = MENU)]
 let ttTimer = 0;
 let spawnTime = 50;
 let breatheTimer = 0;
-let stageBreak = 15;
+let stageBreaks = [10, 25, 40, 55, 70, 85];
+let stage = 0;
+let heldPowerups = [new Powerup(200,200,BLASTER)];
+let fieldPowerups = [];
+let powerUpTimer;
+let blasters = [];
 function preload() {
 	//enemyIdle = loadImage('enemy idle.gif');
 }
 function setup() {
 	createCanvas(400, 400);
+	powerUpTimer = random(300, 500);
 	noSmooth();
 	// 	for(let i = 0; i < 3; i ++){
 	// 		enemies.push(new Enemy(random(20,380), random(20,380),i));
@@ -167,7 +185,7 @@ function timeTrialDraw() {
 
 function surviveDraw() {
 	if (ttTimer <= 0) {
-		if(score <= 15){
+		if(score <= stageBreaks[0]){
 			ttTimer += 75;
 		}else{
 			ttTimer += spawnTime;
@@ -182,9 +200,9 @@ function surviveDraw() {
 			v2.x += 200;
 			v2.y += 200;
 		}
-		if (breatheTimer <= 0) {
+		if (breatheTimer <= 0 && letChoose == false) {
 			let whichEnemy = Math.random();
-			if (Math.random() > 0.5 && score >= stageBreak) {
+			if (Math.random() > 0.5 && score >= stageBreaks[0]) {
 				spawn(v2.x, v2.y, BULLET);
 			} else {
 				spawn(v2.x, v2.y, CHASER);
@@ -194,6 +212,14 @@ function surviveDraw() {
 	}
 	saw.show();
 	saw.update();
+	for(let i = 0; i < blasters.length; i++){
+		blasters[i].show();
+		blasters[i].update();
+		if(blasters[i].ttl == 0){
+			blasters.splice(i, 1);
+			i = 0;
+		}
+	}
 	player.show();
 	player.update();
 	for (let i = 0; i < enemies.length; i++) {
@@ -202,15 +228,35 @@ function surviveDraw() {
 		if (player.checkDead(enemies[i].x, enemies[i].y, enemies[i].w)) {
 			scene = SURVIVEOVER;
 		}
+		for(let j = 0; j < blasters.length; j++){
+			if(enemies[i].check(blasters[j].x, blasters[j].y)){
+				i = 0;
+			}
+		}
 		if (!player.hasSaw) {
 			// if (enemies[i].type == CHASER && enemies[i].check(saw.x, saw.y)) {
 			// }
 			enemies[i].check(saw.x, saw.y);
 		}
+		
 	}
-	if (score % stageBreak == 0 && score != 0 && breatheTimer < 0) {
-		breatheTimer = 400;
+	for(let i = 0; i < fieldPowerups.length; i++){
+		fieldPowerups[i].show(fieldPowerups[i].x, fieldPowerups[i].y);
+		if(fieldPowerups[i].check(player.x, player.y, player.w)){
+			heldPowerups.push(fieldPowerups[i]);
+			fieldPowerups = [];
+			// fieldPowerups.splice(i, 1);
+			i = 0;
+			letChoose = false;
+		}
+	}
+	for(let i = 0; i < heldPowerups.length; i++){
+		heldPowerups[i].show(i * (heldPowerups[i].w + 5) +15, 15);
+	}
+	if (score >= stageBreaks[stage] && score != 0 && breatheTimer < 0) {
+		breatheTimer = 50;
 		spawnTime -= 5;
+		stage ++;
 	}
 	push();
 	fill(255, 255, 255);
@@ -225,6 +271,22 @@ function surviveDraw() {
 		text("BREATHE", 200, 200);
 		pop();
 		breatheTimer--;
+		letChoose = true;
+	}
+
+	if(letChoose && breatheTimer == 0){
+		if(fieldPowerups == 0){
+			// let randomPowerup = Math.floor(Math.random() * 1);
+			fieldPowerups.push(new Powerup(125,200,Math.floor(Math.random() * 3)));
+			fieldPowerups.push(new Powerup(275,200,Math.floor(Math.random() * 3)));
+			player.x = 200;
+			player.y = 350;
+			player.xSpeed = 0;
+			player.ySpeed = 0;
+			player.hasSaw = true;
+
+		}
+		text("Choose: ", 200, 200);
 	}
 
 	if (saw.check(player.x, player.y)) {
@@ -240,6 +302,12 @@ function surviveDraw() {
 	// 	saw.return = true;
 	// }
 	ttTimer--;
+	powerUpTimer--;
+
+	// if(powerUpTimer <= 0){
+	// 	powerUpTimer = random(300, 700);
+	// 	fieldPowerups.push(new Powerup(random(20,380), random(20,380), RETURNER));
+	// }
 }
 
 function surviveOverDraw() {
@@ -326,7 +394,10 @@ function keyPressed() {
 			surviveOverButtons[0].f();
 		}
 		if (scene == SURVIVE) {
-			//saw.return = true;
+			if(heldPowerups.length > 0){
+				heldPowerups[0].activate();
+				heldPowerups.splice(0,1);
+			}
 		}
 	}
 }
