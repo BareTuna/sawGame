@@ -46,6 +46,7 @@ let menuButtons = [new Button(200, 200, 150, 25, "Time trial", () => {
 	heldPowerups = [];
 	stage = 0;
 	player.lives = 3;
+	hurtTimer = 0;
 })];
 let ttOverButtons = [new Button(200, 300, 150, 25, "Try Again? (space)", () => scene = TIMETRIAL), new Button(200, 335, 100, 25, "Menu", () => scene = MENU)];
 let levelButtons = [new Button(200, 300, 150, 25, "Menu", () => scene = MENU)];
@@ -62,6 +63,7 @@ let surviveOverButtons = [new Button(200, 300, 150, 25, "Try Again? (space)", ()
 	heldPowerups = [];
 	stage = 0;
 	player.lives = 3;
+	hurtTimer = 0;
 }), new Button(200, 335, 100, 25, "Menu", () => scene = MENU)]
 let ttTimer = 0;
 let spawnTime = 50;
