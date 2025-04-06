@@ -45,6 +45,7 @@ let menuButtons = [new Button(200, 200, 150, 25, "Time trial", () => {
 	fieldPowerups = [];
 	heldPowerups = [];
 	stage = 0;
+	player.lives = 3;
 })];
 let ttOverButtons = [new Button(200, 300, 150, 25, "Try Again? (space)", () => scene = TIMETRIAL), new Button(200, 335, 100, 25, "Menu", () => scene = MENU)];
 let levelButtons = [new Button(200, 300, 150, 25, "Menu", () => scene = MENU)];
@@ -60,6 +61,7 @@ let surviveOverButtons = [new Button(200, 300, 150, 25, "Try Again? (space)", ()
 	fieldPowerups = [];
 	heldPowerups = [];
 	stage = 0;
+	player.lives = 3;
 }), new Button(200, 335, 100, 25, "Menu", () => scene = MENU)]
 let ttTimer = 0;
 let spawnTime = 50;
@@ -232,13 +234,12 @@ function surviveDraw() {
 		enemies[i].update(player.x, player.y);
 		if (player.checkDead(enemies[i].x, enemies[i].y, enemies[i].w)) {
 			if(player.lives <= 0){
+				player.lifeTimer = 0;
 				scene = SURVIVEOVER;	
 			}
 			hurtTimer = 170;
 		}
 		if (!player.hasSaw || enemies[i].type == BULLET) {
-			// if (enemies[i].type == CHASER && enemies[i].check(saw.x, saw.y)) {
-			// }
 			enemies[i].check(saw.x, saw.y);
 		}
 
@@ -332,8 +333,6 @@ function surviveDraw() {
 	// 	powerUpTimer = random(300, 700);
 	// 	fieldPowerups.push(new Powerup(random(20,380), random(20,380), RETURNER));
 	// }
-
-	
 }
 
 function surviveOverDraw() {

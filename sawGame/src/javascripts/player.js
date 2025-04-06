@@ -121,10 +121,9 @@ class Player{
 	}
 
 	checkDead(x,y,w){
-		
 		if(dist(this.x, this.y, x, y) <= (w/2) + (this.w/2) - 2 && this.lifeTimer == 0){
 			this.lives--;
-			this.lifeTimer = 250;
+			this.lifeTimer = 150;
 			return true;
 		}else{
 			return false;
