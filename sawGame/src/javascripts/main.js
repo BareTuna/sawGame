@@ -19,6 +19,7 @@ const STANDER = 2;
 const RETURNER = 0;
 const FLASH = 1;
 const BLASTER = 2;
+const ONEUP = 3;
 let scene = MENU;
 let letChoose = false;
 let menuButtons = [new Button(200, 200, 150, 25, "Time trial", () => {
@@ -63,12 +64,13 @@ let surviveOverButtons = [new Button(200, 300, 150, 25, "Try Again? (space)", ()
 let ttTimer = 0;
 let spawnTime = 50;
 let breatheTimer = 0;
-let stageBreaks = [10, 25, 40, 55, 70, 85];
+let stageBreaks = [10, 25, 40, 55, 70, 85, 90, 105, 120, 135, 150, 165, 180];
 let stage = 0;
-let heldPowerups = [new Powerup(200,200,BLASTER)];
+let heldPowerups = [new Powerup(200, 200, BLASTER)];
 let fieldPowerups = [];
 let powerUpTimer;
 let blasters = [];
+let hurtTimer = 0;
 function preload() {
 	//enemyIdle = loadImage('enemy idle.gif');
 }
@@ -184,10 +186,14 @@ function timeTrialDraw() {
 }
 
 function surviveDraw() {
+	let hurtColor = color(255,0,0);
+	hurtColor.setAlpha(hurtTimer);
+	background(hurtColor);
+	hurtTimer -= 10;
 	if (ttTimer <= 0) {
-		if(score <= stageBreaks[0]){
+		if (score <= stageBreaks[0]) {
 			ttTimer += 75;
-		}else{
+		} else {
 			ttTimer += spawnTime;
 		}
 		let v2 = goToward(200, 200, random(20, 380), random(20, 380));
@@ -201,21 +207,20 @@ function surviveDraw() {
 			v2.y += 200;
 		}
 		if (breatheTimer <= 0 && letChoose == false) {
-			let whichEnemy = Math.random();
 			if (Math.random() > 0.5 && score >= stageBreaks[0]) {
 				spawn(v2.x, v2.y, BULLET);
 			} else {
 				spawn(v2.x, v2.y, CHASER);
 			}
 			breatheTimer -= 1;
-		}	
+		}
 	}
 	saw.show();
 	saw.update();
-	for(let i = 0; i < blasters.length; i++){
+	for (let i = 0; i < blasters.length; i++) {
 		blasters[i].show();
 		blasters[i].update();
-		if(blasters[i].ttl == 0){
+		if (blasters[i].ttl == 0) {
 			blasters.splice(i, 1);
 			i = 0;
 		}
@@ -226,23 +231,28 @@ function surviveDraw() {
 		enemies[i].show();
 		enemies[i].update(player.x, player.y);
 		if (player.checkDead(enemies[i].x, enemies[i].y, enemies[i].w)) {
-			scene = SURVIVEOVER;
-		}
-		for(let j = 0; j < blasters.length; j++){
-			if(enemies[i].check(blasters[j].x, blasters[j].y)){
-				i = 0;
+			if(player.lives <= 0){
+				scene = SURVIVEOVER;	
 			}
+			hurtTimer = 170;
 		}
-		if (!player.hasSaw) {
+		if (!player.hasSaw || enemies[i].type == BULLET) {
 			// if (enemies[i].type == CHASER && enemies[i].check(saw.x, saw.y)) {
 			// }
 			enemies[i].check(saw.x, saw.y);
 		}
-		
+
 	}
-	for(let i = 0; i < fieldPowerups.length; i++){
+	for (let i = 0; i < enemies.length; i++) {
+		for (let j = 0; j < blasters.length; j++) {
+			if (enemies[i].check(blasters[j].x, blasters[j].y)) {
+				break;
+			}
+		}
+	}
+	for (let i = 0; i < fieldPowerups.length; i++) {
 		fieldPowerups[i].show(fieldPowerups[i].x, fieldPowerups[i].y);
-		if(fieldPowerups[i].check(player.x, player.y, player.w)){
+		if (fieldPowerups[i].check(player.x, player.y, player.w)) {
 			heldPowerups.push(fieldPowerups[i]);
 			fieldPowerups = [];
 			// fieldPowerups.splice(i, 1);
@@ -251,12 +261,19 @@ function surviveDraw() {
 		}
 	}
 	for(let i = 0; i < heldPowerups.length; i++){
-		heldPowerups[i].show(i * (heldPowerups[i].w + 5) +15, 15);
+		if(heldPowerups[i].type == ONEUP){
+			heldPowerups[i].activate();
+			heldPowerups.splice(i, 1);
+			i = 0;
+		}
+	}
+	for (let i = 0; i < heldPowerups.length; i++) {
+		heldPowerups[i].show(i * (heldPowerups[i].w + 5) + 15, 15);
 	}
 	if (score >= stageBreaks[stage] && score != 0 && breatheTimer < 0) {
-		breatheTimer = 50;
+		breatheTimer = 80;
 		spawnTime -= 5;
-		stage ++;
+		stage++;
 	}
 	push();
 	fill(255, 255, 255);
@@ -265,8 +282,15 @@ function surviveDraw() {
 	fill(0);
 	text("Score: " + score, 350, 25);
 	pop();
-	
-	if(breatheTimer > 0 && enemies.length == 0){
+
+	if(heldPowerups[0]?.type == FLASH){
+		push();
+		noFill();
+		ellipse(player.x, player.y, 250, 250);
+		pop();
+	}
+
+	if (breatheTimer > 0 && enemies.length == 0) {
 		push();
 		text("BREATHE", 200, 200);
 		pop();
@@ -274,11 +298,11 @@ function surviveDraw() {
 		letChoose = true;
 	}
 
-	if(letChoose && breatheTimer == 0){
-		if(fieldPowerups == 0){
+	if (letChoose && breatheTimer == 0) {
+		if (fieldPowerups == 0) {
 			// let randomPowerup = Math.floor(Math.random() * 1);
-			fieldPowerups.push(new Powerup(125,200,Math.floor(Math.random() * 3)));
-			fieldPowerups.push(new Powerup(275,200,Math.floor(Math.random() * 3)));
+			fieldPowerups.push(new Powerup(125, 200, Math.floor(Math.random() * 4)));
+			fieldPowerups.push(new Powerup(275, 200, Math.floor(Math.random() * 4)));
 			player.x = 200;
 			player.y = 350;
 			player.xSpeed = 0;
@@ -308,6 +332,8 @@ function surviveDraw() {
 	// 	powerUpTimer = random(300, 700);
 	// 	fieldPowerups.push(new Powerup(random(20,380), random(20,380), RETURNER));
 	// }
+
+	
 }
 
 function surviveOverDraw() {
@@ -355,7 +381,7 @@ function mousePressed() {
 
 }
 function kill(j) {
-	if(enemies[j].type == CHASER || enemies[j].type == STANDER){
+	if (enemies[j].type == CHASER || enemies[j].type == STANDER) {
 		score++;
 	}
 	enemies.splice(j, 1);
@@ -394,9 +420,9 @@ function keyPressed() {
 			surviveOverButtons[0].f();
 		}
 		if (scene == SURVIVE) {
-			if(heldPowerups.length > 0){
+			if (heldPowerups.length > 0) {
 				heldPowerups[0].activate();
-				heldPowerups.splice(0,1);
+				heldPowerups.splice(0, 1);
 			}
 		}
 	}

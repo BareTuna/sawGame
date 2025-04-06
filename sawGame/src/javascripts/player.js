@@ -9,17 +9,30 @@ class Player{
 		this.maxSpeed = 3.5;
 		this.hasSaw = false;
 		this.w = 20;
+		this.lives = 3;
+		this.lifeTimer = 0;
 	}
 	show(){
 		this.drawLine();
+		let lighter = 0;
+		if(this.lifeTimer > 0){
+			lighter = 150;
+		}
 		push();
 		if(this.hasSaw){
-			fill(255,0,0);
+			fill(255,lighter,lighter);
 		}else{
-			fill(0,0,255);
+			fill(lighter,lighter,255);
 		}
 		ellipse(this.x,this.y,this.w,this.w);
 		pop();
+
+		for(let i = 0; i < this.lives; i++){
+			push();
+			fill(255, 0, 0);
+			ellipse(15 + i * 15,40,this.w / 2,this.w / 2);
+			pop();
+		}
 		
 	}
 	update(){
@@ -35,7 +48,11 @@ class Player{
 		this.y += this.ySpeed;
 		this.x += this.xSpeed;
 		
-		this.checkWalls();	
+		this.checkWalls();
+
+		if(this.lifeTimer > 0){
+			this.lifeTimer --;
+		}
 	}
 	
 	checkWalls(){
@@ -104,7 +121,10 @@ class Player{
 	}
 
 	checkDead(x,y,w){
-		if(dist(this.x, this.y, x, y) <= (w/2) + (this.w/2) - 2){
+		
+		if(dist(this.x, this.y, x, y) <= (w/2) + (this.w/2) - 2 && this.lifeTimer == 0){
+			this.lives--;
+			this.lifeTimer = 250;
 			return true;
 		}else{
 			return false;
