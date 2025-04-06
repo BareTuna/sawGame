@@ -6,7 +6,7 @@ class Player{
 		this.y = 200;
 		this.ySpeed = 0;
 		this.yAcc = 0.5;
-		this.maxSpeed = 4;
+		this.maxSpeed = 3.5;
 		this.hasSaw = false;
 		this.w = 20;
 	}
