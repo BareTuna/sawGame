@@ -1,5 +1,5 @@
-class Saw{
-	constructor(x,y,isBlaster = false, ttl = -1){
+class Saw {
+	constructor(x, y, isBlaster = false, ttl = -1) {
 		this.x = x;
 		this.y = y;
 		this.w = 20;
@@ -11,84 +11,95 @@ class Saw{
 		this.isBlaster = isBlaster;
 		this.ttl = ttl;
 	}
-	update(){
+	update() {
 		let hit = false;
-		if(this.ttl > 0){
-			this.ttl --;
+		if (this.ttl > 0) {
+			this.ttl--;
 		}
-		if(this.x >= 400 - this.w / 2){
+		if (this.x >= 400 - this.w / 2) {
 			this.xSpeed *= -1;
-			this.x =  400 - this.w / 2;
+			this.x = 400 - this.w / 2;
 			hit = true;
 		}
-		if(this.x <= 0 + this.w / 2){
+		if (this.x <= 0 + this.w / 2) {
 			this.xSpeed *= -1;
 			this.x = 0 + this.w / 2;
 			hit = true;
 		}
-		if(this.y >= 400 - this.w / 2){
+		if (this.y >= 400 - this.w / 2) {
 			this.ySpeed *= -1;
 			this.y = 400 - this.w / 2;
 			hit = true;
 		}
-		if(this.y <= 0 + this.w / 2){
-			this.ySpeed *= -1;
-			this.y = 0 + this.w / 2;
-			hit = true;
+		if (stage == COLUMNSTAGE) {
+			if (this.y <= 100 + this.w / 2) {
+				this.ySpeed *= -1;
+				this.y = 100 + this.w / 2;
+				hit = true;
+				if(bosses.length >= 1){
+					bosses[0].health -= 2;
+				}
+			}
+		} else {
+			if (this.y <= 0 + this.w / 2) {
+				this.ySpeed *= -1;
+				this.y = 0 + this.w / 2;
+				hit = true;
+			}
 		}
 		this.x += this.xSpeed;
 		this.y += this.ySpeed;
-		
-		if(hit == true && !this.isBlaster){
+
+		if (hit == true && !this.isBlaster) {
 			this.ySpeed *= 0.60;
 			this.xSpeed *= 0.60;
 		}
-		if(dist(this.x,this.y,player.x,player.y) > 40){
+		if (dist(this.x, this.y, player.x, player.y) > 40) {
 			this.gotFar = true;
 		}
-		if(dist(this.x,this.y,player.x,player.y) < 40 && this.gotFar){
+		if (dist(this.x, this.y, player.x, player.y) < 40 && this.gotFar) {
 			this.going = true;
-		}else{
+		} else {
 			this.going = false;
 		}
-		
-		if(this.going && !this.isBlaster){
-			let cringe = goToward(this.x,this.y,player.x,player.y);
+
+		if (this.going && !this.isBlaster) {
+			let cringe = goToward(this.x, this.y, player.x, player.y);
 			this.xSpeed = cringe.x * 4.5;
 			this.ySpeed = cringe.y * 4.5;
 		}
 
 		this.going = false;
 
-		if(this.return && !this.isBlaster){
-			let cringe = goToward(this.x,this.y,player.x,player.y);
+		if (this.return && !this.isBlaster) {
+			let cringe = goToward(this.x, this.y, player.x, player.y);
 			this.xSpeed = cringe.x * 7;
 			this.ySpeed = cringe.y * 7;
-			if((dist(this.x,this.y,player.x,player.y) < 40 && this.gotFar) || player.hasSaw == true){
+			if ((dist(this.x, this.y, player.x, player.y) < 40 && this.gotFar) || player.hasSaw == true) {
 				this.return = false;
 			}
 		}
 	}
-	check(x,y){
-		if(dist(this.x,this.y,x,y) < 20){
+	check(x, y) {
+		if (dist(this.x, this.y, x, y) < 20) {
 			return true;
 		}
 	}
-	show(){
-		
-		if(this.isBlaster){
+	show() {
+
+		if (this.isBlaster) {
 			push();
-			fill(200,200,255);
-			ellipse(this.x,this.y,20,20);
+			fill(200, 200, 255);
+			ellipse(this.x, this.y, 20, 20);
 			pop();
-		}else{
+		} else {
 			push();
-			fill(200,255,200);
-			ellipse(this.x,this.y,20,20);
+			fill(200, 255, 200);
+			ellipse(this.x, this.y, 20, 20);
 			pop();
 		}
 	}
-	setSpeed(x,y){
+	setSpeed(x, y) {
 		this.xSpeed = x;
 		this.ySpeed = y;
 	}

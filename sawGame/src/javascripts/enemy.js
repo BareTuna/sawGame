@@ -16,6 +16,11 @@ class Enemy{
         if(this.type == CHASER){
             this.speed = 1;
 		}
+
+		if(this.type == BULLETBARRIER){
+			this.speed = 2;
+			this.moveTowardBullet(this.targetX, this.targetY);
+		}
 		
 	}
 	show(){
@@ -25,14 +30,14 @@ class Enemy{
 		    rect(this.x,this.y, this.w, this.w);
 		    pop();
         }
-        if(this.type == BULLET){
+        if(this.type == BULLET || this.type == BULLETBARRIER){
             push();
 		    ellipse(this.x,this.y, this.w, this.w);
 		    pop();
         }
 	}
 	check(x,y){
-		if(dist(this.x,this.y,x,y) < 20 && this.type != BULLET){
+		if(dist(this.x,this.y,x,y) < 20 && this.type != BULLET && this.type != BULLETBARRIER){
 			kill(this.id);
 			return true;
 		}else{
@@ -50,7 +55,7 @@ class Enemy{
 		if(this.type == CHASER){
 			this.moveToward(x,y);
 		}
-		if(this.type == BULLET){
+		if(this.type == BULLET || this.type == BULLETBARRIER){
 			this.x -= this.dx;
             this.y -= this.dy;
 		}

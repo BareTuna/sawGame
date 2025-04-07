@@ -66,7 +66,7 @@ class Player{
 			this.xSpeed = 0;
 		}
 		
-		if(this.y <= 10){
+		if(this.y <= (stage == COLUMNSTAGE ? 110 : 10)){
 			this.y -= this.ySpeed;
 			this.ySpeed = 0;
 		}

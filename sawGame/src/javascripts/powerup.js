@@ -20,18 +20,15 @@ class Powerup {
             }
         }
         if (this.type == BLASTER) {
+            let oldBlasters = blasters.length;
             for (let i = 0; i < 8; i++) {
                 blasters.push(new Saw(player.x, player.y, true, 200));
             }
-            for (let i = 0; i < 4; i++) {
-                let cringe = goToward(this.x, this.y, i % 2 ? this.x - 50 + random(-10, 10) : this.x + 50 + random(-10, 10), i % 3 ? this.y - 50 + random(-10, 10) : this.y + 50 + random(-10, 10));
-                blasters[i].xSpeed = cringe.x * 4.5;
-                blasters[i].ySpeed = cringe.y * 4.5;
-            }
-            for (let i = 4; i < blasters.length; i++) {
-                let xOff = ((i%2) == 0 ? 0 : (i-6 < 0 ? -1 : 1) * 50) + random(-10, 10);
-                let yOff = ((i%2) != 0 ? 0 : (i-6 < 0 ? -1 : 1) * 50) + random(-10, 10);
-                let cringe = goToward(this.x, this.y, this.x + xOff, this.y + yOff);
+            let targets = [createVector(player.x, player.y + 50), createVector(player.x + 50, player.y + 50), createVector(player.x + 50, player.y), createVector(player.x + 50, player.y - 50),
+                createVector(player.x, player.y-50), createVector(player.x - 50, player.y-50), createVector(player.x - 50, player.y), createVector(player.x - 50, player.y + 50)
+            ];
+            for(let i = oldBlasters; i < blasters.length; i++){
+                let cringe = goToward(player.x, player.y, targets[i % 8].x + random(-10, 10), targets[i % 8].y + random(-10, 10));
                 blasters[i].xSpeed = cringe.x * 4.5;
                 blasters[i].ySpeed = cringe.y * 4.5;
             }
