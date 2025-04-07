@@ -68,12 +68,12 @@ let surviveOverButtons = [new Button(200, 300, 150, 25, "Try Again? (space)", ()
 	player.lives = 3;
 	hurtTimer = 0;
 }), new Button(200, 335, 100, 25, "Menu", () => scene = MENU)]
-const COLUMNSTAGE = 3;
+const COLUMNSTAGE = 4;
 let ttTimer = 0;
 let spawnTime = 50;
 let breatheTimer = 0;
-let stageBreaks = [10, 20, 30, COLUMNSTAGE, 55, 70, 85, 90, 105, 120, 135, 150, 165, 180];
-let stage = 0;
+let stageBreaks = [10, 25, 40, 55, COLUMNSTAGE, 70, 85, 90, 105, 120, 135, 150, 165, 180];
+let stage = 5;
 let heldPowerups = [new Powerup(200, 200, BLASTER)];
 let fieldPowerups = [];
 let powerUpTimer;
@@ -86,7 +86,8 @@ function preload() {
 	//enemyIdle = loadImage('enemy idle.gif');
 }
 function setup() {
-	createCanvas(400, 400);
+	const myCanvas = createCanvas(400, 400);
+	myCanvas.parent('canvasDiv');
 	powerUpTimer = random(300, 500);
 	noSmooth();
 	// 	for(let i = 0; i < 3; i ++){
@@ -280,13 +281,6 @@ function surviveDraw() {
 			i = 0;
 		}
 	}
-	//BOSS:
-	if (bosses.length > 0) {
-		bosses[0].show();
-	}
-	//PLAYER
-	player.show();
-	player.update();
 	//ENEMIES
 	for (let i = 0; i < enemies.length; i++) {
 		enemies[i].show();
@@ -311,6 +305,14 @@ function surviveDraw() {
 			}
 		}
 	}
+	//BOSS:
+	if (bosses.length > 0) {
+		bosses[0].show();
+	}
+	//PLAYER
+	player.show();
+	player.update();
+
 
 
 
@@ -338,6 +340,8 @@ function surviveDraw() {
 				breatheTimer = -1;
 				if (stage == COLUMNSTAGE) {
 					bosses.push(new Boss(COLUMNLORD));
+				}else{
+					spawnTime -= 2;
 				}
 			}
 		}

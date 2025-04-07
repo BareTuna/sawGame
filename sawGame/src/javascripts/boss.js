@@ -9,6 +9,8 @@ class Boss {
         if (this.type == COLUMNLORD) {
             push();
             rect(0, 0, 400, 100);
+            fill(255,50,50);
+            rect(0,0,(400/60) * this.health, 100);
             pop();
         }
     }
