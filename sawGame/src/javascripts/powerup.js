@@ -1,9 +1,26 @@
 class Powerup {
-    constructor(x, y, type) {
+    constructor(x, y, type, isPerk = false) {
         this.x = x;
         this.y = y;
         this.w = 15;
         this.type = type;
+        this.isPerk = isPerk;
+        this.description;
+        if (this.type == ONEUP) {
+            this.description = "One more sell!";
+        }
+        if (this.type == BLASTER) {
+            this.description = "Unleashes phsycic blasts in all directions."
+        }
+        if (this.type == RETURNER) {
+            this.description = "Call your partner back to you."
+        }
+        if (this.type == FLASH) {
+            this.description = "Destroy all enemies in a radius around you."
+        }
+        if (this.type == PRICKLY) {
+            this.description = "Launches projectiles on damage.";
+        }
     }
 
     activate() {
@@ -11,10 +28,10 @@ class Powerup {
             saw.return = true;
         }
         if (this.type == FLASH) {
-            for(let i = 0; i < enemies.length; i++){
-                if(dist(player.x, player.y, enemies[i].x, enemies[i].y) <= 250/2){
+            for (let i = 0; i < enemies.length; i++) {
+                if (dist(player.x, player.y, enemies[i].x, enemies[i].y) <= 250 / 2) {
                     kill(i);
-                    score ++;
+                    score++;
                     i = -1;
                 }
             }
@@ -25,16 +42,19 @@ class Powerup {
                 blasters.push(new Saw(player.x, player.y, true, 200));
             }
             let targets = [createVector(player.x, player.y + 50), createVector(player.x + 50, player.y + 50), createVector(player.x + 50, player.y), createVector(player.x + 50, player.y - 50),
-                createVector(player.x, player.y-50), createVector(player.x - 50, player.y-50), createVector(player.x - 50, player.y), createVector(player.x - 50, player.y + 50)
+            createVector(player.x, player.y - 50), createVector(player.x - 50, player.y - 50), createVector(player.x - 50, player.y), createVector(player.x - 50, player.y + 50)
             ];
-            for(let i = oldBlasters; i < blasters.length; i++){
+            for (let i = oldBlasters; i < blasters.length; i++) {
                 let cringe = goToward(player.x, player.y, targets[i % 8].x + random(-10, 10), targets[i % 8].y + random(-10, 10));
                 blasters[i].xSpeed = cringe.x * 4.5;
                 blasters[i].ySpeed = cringe.y * 4.5;
             }
         }
-        if(this.type == ONEUP){
+        if (this.type == ONEUP) {
             player.lives++;
+        }
+        if (this.type == PRICKLY) {
+            console.log("WRONG");
         }
     }
 
@@ -45,34 +65,47 @@ class Powerup {
     }
 
     show(x, y) {
+
         if (this.type == RETURNER) {
             push();
             fill(0, 255, 0);
             ellipse(x, y, this.w, this.w);
             pop();
-        }
-
-        if (this.type == FLASH) {
+        } else if (this.type == FLASH) {
             push();
             fill(0, 0, 255);
             rectMode(CENTER);
             rect(x, y, this.w, this.w);
             pop();
-        }
-
-        if (this.type == BLASTER) {
+        } else if (this.type == BLASTER) {
             push();
             fill(255, 0, 0);
             rectMode(CENTER);
             rect(x, y, this.w, this.w);
             pop();
+        } else if (this.type == ONEUP) {
+            push();
+            fill(255, 0, 0);
+            ellipse(x, y, this.w / 1.2, this.w / 1.2);
+            pop();
         }
 
-        if (this.type == ONEUP) {
+
+    }
+
+    showDescription() {
+        push();
+        rectMode(CENTER);
+        rect(this.x, this.y - 75, 125, 100);
+        textAlign(LEFT);
+        text(this.description, this.x + 5, this.y - 120, 120);
+        pop();
+
+        if (this.isPerk) {
             push();
-			fill(255, 0, 0);
-			ellipse(x,y,this.w / 1.2,this.w / 1.2);
-			pop();
+            rectMode(CENTER);
+            rect(this.x, this.y, 20, 20);
+            pop();
         }
     }
 }

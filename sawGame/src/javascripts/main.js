@@ -21,6 +21,10 @@ const RETURNER = 0;
 const FLASH = 1;
 const BLASTER = 2;
 const ONEUP = 3;
+const allPowerUps = [RETURNER, FLASH, BLASTER, ONEUP];
+//perk types
+const PRICKLY = allPowerUps.length;
+const allPerks = [PRICKLY];
 //boss types
 const COLUMNLORD = 0;
 let scene = MENU;
@@ -45,8 +49,9 @@ let menuButtons = [new Button(200, 200, 150, 25, "Time trial", () => {
 	spawnTime = 50;
 	breatheTimer = -1;
 	enemies = [];
-	fieldPowerups = [];
+	fieldUpgrades = [];
 	heldPowerups = [];
+	blasters = [];
 	stage = 0;
 	player.lives = 3;
 	hurtTimer = 0;
@@ -62,8 +67,9 @@ let surviveOverButtons = [new Button(200, 300, 150, 25, "Try Again? (space)", ()
 	spawnTime = 50;
 	breatheTimer = -1;
 	enemies = [];
-	fieldPowerups = [];
+	fieldUpgrades = [];
 	heldPowerups = [];
+	blasters = [];
 	stage = 0;
 	player.lives = 3;
 	hurtTimer = 0;
@@ -72,10 +78,12 @@ const COLUMNSTAGE = 4;
 let ttTimer = 0;
 let spawnTime = 50;
 let breatheTimer = 0;
-let stageBreaks = [10, 25, 40, 55, COLUMNSTAGE, 70, 85, 90, 105, 120, 135, 150, 165, 180];
+// let stageBreaks = [10, 25, 40, 55, COLUMNSTAGE, 70, 85, 90, 105, 120, 135, 150, 165, 180];
+let stageBreaks = [0, 3, 40, 55, COLUMNSTAGE, 70, 85, 90, 105, 120, 135, 150, 165, 180];
+
 let stage = 5;
 let heldPowerups = [new Powerup(200, 200, BLASTER)];
-let fieldPowerups = [];
+let fieldUpgrades = [];
 let powerUpTimer;
 let blasters = [];
 let hurtTimer = 0;
@@ -201,7 +209,6 @@ function surviveDraw() {
 	// if(bosses.length > 0){
 	// 	console.log(bosses[0].health);
 	// }
-	console.log(stage);
 	// HURT TIMER STUFF
 	let hurtColor = color(255, 0, 0);
 	hurtColor.setAlpha(hurtTimer);
@@ -290,6 +297,12 @@ function surviveDraw() {
 				player.lifeTimer = 0;
 				scene = SURVIVEOVER;
 			}
+			for(let i = 0; i < heldPowerups.length; i++){
+				if(heldPowerups[i].type == PRICKLY){
+					let shoot = new Powerup(-50,-50,BLASTER);
+					shoot.activate();
+				}
+			}
 			hurtTimer = 170;
 		}
 		if (!player.hasSaw || enemies[i].type == BULLET) {
@@ -327,11 +340,12 @@ function surviveDraw() {
 	}
 	//////////////
 	//Powerup draws
-	for (let i = 0; i < fieldPowerups.length; i++) {
-		fieldPowerups[i].show(fieldPowerups[i].x, fieldPowerups[i].y);
-		if (fieldPowerups[i].check(player.x, player.y, player.w)) {
-			heldPowerups.push(fieldPowerups[i]);
-			fieldPowerups = [];
+	for (let i = 0; i < fieldUpgrades.length; i++) {
+		fieldUpgrades[i].show(fieldUpgrades[i].x, fieldUpgrades[i].y);
+		fieldUpgrades[i].showDescription();
+		if (fieldUpgrades[i].check(player.x, player.y, player.w)) {
+			heldPowerups.push(fieldUpgrades[i]);
+			fieldUpgrades = [];
 			i = 0;
 			//////////NEW STAGE////////////////
 			if (letChoose) {
@@ -346,9 +360,12 @@ function surviveDraw() {
 			}
 		}
 	}
-
+	let modifier = 0;
 	for (let i = 0; i < heldPowerups.length; i++) {
-		heldPowerups[i].show(i * (heldPowerups[i].w + 5) + 15, 15);
+		if(heldPowerups[i].isPerk){
+			modifier += heldPowerups[i].w;
+		}
+		heldPowerups[i].show(i * (heldPowerups[i].w + 5) + 15 - modifier, 15);
 		if (heldPowerups[i].type == ONEUP) {
 			heldPowerups[i].activate();
 			heldPowerups.splice(i, 1);
@@ -356,7 +373,19 @@ function surviveDraw() {
 		}
 	}
 
-	if (heldPowerups[0]?.type == FLASH) {
+	
+
+	let nextPowerUpFlash = false;
+	for(let i = 0; i < heldPowerups.length; i++){
+		if(!heldPowerups[i].isPerk){
+			if(heldPowerups[i].type == FLASH){
+				nextPowerUpFlash = true;
+			}
+			break;
+		}
+	}
+
+	if (nextPowerUpFlash) {
 		push();
 		noFill();
 		ellipse(player.x, player.y, 250, 250);
@@ -383,10 +412,31 @@ function surviveDraw() {
 	}
 	//When do i show powerups?
 	if (letChoose && breatheTimer == 0) {
-		if (fieldPowerups.length == 0) {
-			// let randomPowerup = Math.floor(Math.random() * 1);
-			fieldPowerups.push(new Powerup(125, 200, Math.floor(Math.random() * 4)));
-			fieldPowerups.push(new Powerup(275, 200, Math.floor(Math.random() * 4)));
+		if (fieldUpgrades.length == 0) {
+			let randomPowerup = Math.floor(Math.random() * allPowerUps.length);
+			fieldUpgrades.push(new Powerup(125, 200, randomPowerup));
+			let perkCount = 0;
+			for(let i = 0; i < heldPowerups.length; i++){
+				if(heldPowerups[i].isPerk){
+					perkCount++;
+				}
+			}
+			if(perkCount >= allPerks.length){
+				console.log("HERE");
+				fieldUpgrades.push(new Powerup(275, 200, Math.floor(Math.random() * 4)));
+			}else{
+				let randomPerk = Math.floor(Math.random() * allPerks.length) + allPowerUps.length;
+				for(let i = 0; i < heldPowerups.length; i++){
+					if(heldPowerups[i].isPerk){
+						if(heldPowerups[i].type == randomPerk){
+							randomPerk = Math.floor(Math.random() * allPerks.length) + allPowerUps.length;
+							i = 0;
+						}
+					}
+				}
+				fieldUpgrades.push(new Powerup(275, 200, randomPerk, true));
+			}
+			
 			player.x = 200;
 			player.y = 350;
 			player.xSpeed = 0;
@@ -408,7 +458,7 @@ function surviveDraw() {
 	// powerUpTimer--;
 	// if(powerUpTimer <= 0){
 	// 	powerUpTimer = random(300, 700);
-	// 	fieldPowerups.push(new Powerup(random(20,380), random(20,380), RETURNER));
+	// 	fieldUpgrades.push(new Powerup(random(20,380), random(20,380), RETURNER));
 	// }
 
 	// if (dist(player.x, player.y, saw.x, saw.y) >= 70) {
@@ -502,9 +552,12 @@ function keyPressed() {
 			surviveOverButtons[0].f();
 		}
 		if (scene == SURVIVE) {
-			if (heldPowerups.length > 0) {
-				heldPowerups[0].activate();
-				heldPowerups.splice(0, 1);
+			for(let i = 0; i < heldPowerups.length; i++){
+				if(!heldPowerups[i].isPerk){
+					heldPowerups[i].activate();
+					heldPowerups.splice(i,1);
+					break;
+				}
 			}
 		}
 	}
