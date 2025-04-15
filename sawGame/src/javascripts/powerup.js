@@ -21,6 +21,12 @@ class Powerup {
         if (this.type == PRICKLY) {
             this.description = "Launches projectiles on damage.";
         }
+        if(this.type == MOLASSES){
+            this.description = "Covers the ring in sticky molasses, slowing enemies down."
+        }
+        if(this.type == MATCHALATTE){
+            this.description = "Energizes you to move faster in the ring."
+        }
     }
 
     activate() {
@@ -55,6 +61,9 @@ class Powerup {
         }
         if (this.type == PRICKLY) {
             console.log("WRONG");
+        }
+        if(this.type == MATCHALATTE){
+            player.maxSpeed += 0.5;
         }
     }
 

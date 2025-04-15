@@ -36,6 +36,7 @@ class Player{
 		
 	}
 	update(){
+		
 		this.move();
 		
 		if(Math.abs(this.xSpeed) < 0.3){

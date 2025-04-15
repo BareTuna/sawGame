@@ -21,6 +21,12 @@ class Enemy{
 			this.speed = 2;
 			this.moveTowardBullet(this.targetX, this.targetY);
 		}
+
+		for(let i = 0; i < heldPowerups.length; i++){
+			if(heldPowerups[i].type == MOLASSES){
+				this.speed *= 0.6666;
+			}
+		}
 		
 	}
 	show(){

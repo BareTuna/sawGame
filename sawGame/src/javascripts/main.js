@@ -24,7 +24,11 @@ const ONEUP = 3;
 const allPowerUps = [RETURNER, FLASH, BLASTER, ONEUP];
 //perk types
 const PRICKLY = allPowerUps.length;
-const allPerks = [PRICKLY];
+const MOLASSES = allPowerUps.length+1;
+const MATCHALATTE = allPowerUps.length+2;
+
+
+const allPerks = [PRICKLY, MOLASSES, MATCHALATTE];
 //boss types
 const COLUMNLORD = 0;
 let scene = MENU;
@@ -344,6 +348,9 @@ function surviveDraw() {
 		fieldUpgrades[i].show(fieldUpgrades[i].x, fieldUpgrades[i].y);
 		fieldUpgrades[i].showDescription();
 		if (fieldUpgrades[i].check(player.x, player.y, player.w)) {
+			if(fieldUpgrades[i].type == MATCHALATTE){
+				fieldUpgrades[i].activate;
+			}
 			heldPowerups.push(fieldUpgrades[i]);
 			fieldUpgrades = [];
 			i = 0;
