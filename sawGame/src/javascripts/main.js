@@ -90,7 +90,7 @@ const BULLETSTAGE = 9;
 let ttTimer = 0;
 let spawnTime = 50;
 let breatheTimer = 0;
-let stageBreaks = [10, 25, 40, 55, COLUMNSTAGE, 70, 85, 90, 105, BULLETSTAGE, 120, 135, 150, 165, 180];
+let stageBreaks = [10, 25, 40, 55, COLUMNSTAGE, 70, 85, 100, 115, BULLETSTAGE, 130, 145, 160, 175, 190];
 // let stageBreaks = [0, 3, 40, 55, COLUMNSTAGE, 70, 85, 90, 105, 120, 135, 150, 165, 180];
 // let stageBreaks = [0, BULLETSTAGE, 25, 40, 55, 70, 85, 90, 105, COLUMNSTAGE, 120, 135, 150, 165, 180];
 
