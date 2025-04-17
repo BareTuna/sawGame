@@ -22,10 +22,22 @@ class Powerup {
             this.description = "Launches projectiles on damage.";
         }
         if(this.type == MOLASSES){
-            this.description = "Covers the ring in sticky molasses, slowing enemies down."
+            this.description = "Covers the ring in sticky molasses, slowing enemies down.";
         }
         if(this.type == MATCHALATTE){
-            this.description = "Energizes you to move faster in the ring."
+            this.description = "Energizes you to move faster in the ring.";
+        }
+        if(this.type == RICOCHET){
+            this.description = "Partner will lock on to a nearby enemy after hit.";
+        }
+        if(this.type == BREATHER){
+            this.description = "Extra time to recover after hit.";
+        }
+        if(this.type == RAGE){
+            this.description = "Gives extra speed and destroys enemies on touch!";
+        }
+        if(this.type == TBOUNCE){
+            this.description = "On the partner's third bounce they will let out a phsycic blast";
         }
     }
 
@@ -37,7 +49,9 @@ class Powerup {
             for (let i = 0; i < enemies.length; i++) {
                 if (dist(player.x, player.y, enemies[i].x, enemies[i].y) <= 250 / 2) {
                     kill(i);
-                    score++;
+                    if(enemies[i].killable){
+                        score++;
+                    }
                     i = -1;
                 }
             }
@@ -64,6 +78,24 @@ class Powerup {
         }
         if(this.type == MATCHALATTE){
             player.maxSpeed += 0.5;
+        }
+        if(this.type == RAGE){
+            player.rageTimer += 300;
+        }
+
+        if (this.type == TBOUNCE) {
+            let oldBlasters = blasters.length;
+            for (let i = 0; i < 8; i++) {
+                blasters.push(new Saw(saw.x, saw.y, true, 200));
+            }
+            let targets = [createVector(player.x, player.y + 50), createVector(player.x + 50, player.y + 50), createVector(player.x + 50, player.y), createVector(player.x + 50, player.y - 50),
+            createVector(player.x, player.y - 50), createVector(player.x - 50, player.y - 50), createVector(player.x - 50, player.y), createVector(player.x - 50, player.y + 50)
+            ];
+            for (let i = oldBlasters; i < blasters.length; i++) {
+                let cringe = goToward(player.x, player.y, targets[i % 8].x + random(-10, 10), targets[i % 8].y + random(-10, 10));
+                blasters[i].xSpeed = cringe.x * 4.5;
+                blasters[i].ySpeed = cringe.y * 4.5;
+            }
         }
     }
 
@@ -96,6 +128,12 @@ class Powerup {
             push();
             fill(255, 0, 0);
             ellipse(x, y, this.w / 1.2, this.w / 1.2);
+            pop();
+        } else if (this.type == RAGE) {
+            push();
+            rectMode(CENTER);
+            fill(255, 0, 0);
+            rect(x, y, this.w, this.w / 2);
             pop();
         }
 

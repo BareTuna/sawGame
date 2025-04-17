@@ -3,6 +3,9 @@ class Boss {
         this.type = type;
         this.toggle = false;
         this.health = 60;
+        if(this.type == BULLETSTORM){
+            this.health = 130;
+        }
     }
 
     show() {
@@ -13,6 +16,11 @@ class Boss {
             rect(0,0,(400/60) * this.health, 100);
             pop();
         }
+        if(this.type == BULLETSTORM){
+            if(this.health >= 120){
+                text("Survive!", 200, 200);
+            }
+        }
     }
 
     check(){
@@ -22,6 +30,9 @@ class Boss {
     attack() {
         if (this.type === COLUMNLORD) {
             this.zigZagAttack();
+        }
+        if(this.type == BULLETSTORM){
+            
         }
     }
 

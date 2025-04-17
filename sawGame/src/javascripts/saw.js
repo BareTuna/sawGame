@@ -10,6 +10,8 @@ class Saw {
 		this.return = false;
 		this.isBlaster = isBlaster;
 		this.ttl = ttl;
+		this.hitOne = false;
+		this.hitCount = 0;
 	}
 	update() {
 		let hit = false;
@@ -37,7 +39,9 @@ class Saw {
 				this.y = 100 + this.w / 2;
 				hit = true;
 				if(bosses.length >= 1){
-					bosses[0].health -= 2;
+					if(bosses[0].type == COLUMNLORD){
+						bosses[0].health -= 2;
+					}
 				}
 			}
 		} else {
@@ -53,6 +57,7 @@ class Saw {
 		if (hit == true && !this.isBlaster) {
 			this.ySpeed *= 0.60;
 			this.xSpeed *= 0.60;
+			this.hitCount ++;
 		}
 		if (dist(this.x, this.y, player.x, player.y) > 40) {
 			this.gotFar = true;
@@ -78,6 +83,15 @@ class Saw {
 			if ((dist(this.x, this.y, player.x, player.y) < 40 && this.gotFar) || player.hasSaw == true) {
 				this.return = false;
 			}
+		}
+
+		if(this.hitCount == 4){
+			for(let i = 0; i < heldPowerups.length; i++){
+				if(heldPowerups[i].type == TBOUNCE){
+					heldPowerups[i].activate();
+				}
+			}
+			this.hitCount++;
 		}
 	}
 	check(x, y) {
