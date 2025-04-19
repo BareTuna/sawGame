@@ -640,8 +640,6 @@ function keyPressed() {
 		}
 	}
 	if(keyCode === 69 && (scene == SURVIVE || scene == PAUSE)){
-		score = 174;
-		stage = DREVILSTAGE - 1;
 		if(scene == SURVIVE){
 			scene = PAUSE;
 		}else{
