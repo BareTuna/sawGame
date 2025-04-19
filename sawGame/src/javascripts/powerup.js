@@ -37,7 +37,7 @@ class Powerup {
             this.description = "Gives extra speed and destroys enemies on touch!";
         }
         if(this.type == TBOUNCE){
-            this.description = "On the partner's third bounce they will let out a phsycic blast";
+            this.description = "On the partner's fourth bounce they will let out a phsycic blast";
         }
     }
 

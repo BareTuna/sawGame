@@ -6,6 +6,9 @@ class Boss {
         if(this.type == BULLETSTORM){
             this.health = 130;
         }
+        if(this.type == DREVIL){
+            this.health = 100;
+        }
     }
 
     show() {
@@ -21,6 +24,16 @@ class Boss {
                 text("Survive!", 200, 200);
             }
         }
+        if(this.type == DREVIL){
+            push();
+            fill(255);
+            ellipse(200,0,150,150);
+            rectMode(CENTER);
+            rect(200, 85, 100, 10);
+            fill(255,0,0);
+            rect(200, 85, this.health, 10);
+            pop();
+        }
     }
 
     check(){
@@ -30,9 +43,6 @@ class Boss {
     attack() {
         if (this.type === COLUMNLORD) {
             this.zigZagAttack();
-        }
-        if(this.type == BULLETSTORM){
-            
         }
     }
 

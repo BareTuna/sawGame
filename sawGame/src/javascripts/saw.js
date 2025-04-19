@@ -38,8 +38,8 @@ class Saw {
 				this.ySpeed *= -1;
 				this.y = 100 + this.w / 2;
 				hit = true;
-				if(bosses.length >= 1){
-					if(bosses[0].type == COLUMNLORD){
+				if (bosses.length >= 1) {
+					if (bosses[0].type == COLUMNLORD) {
 						bosses[0].health -= 2;
 					}
 				}
@@ -51,13 +51,39 @@ class Saw {
 				hit = true;
 			}
 		}
+		if (stage == DREVILSTAGE && bosses.length > 0) {
+			if (dist(this.x, this.y, 200, 0) < (150 / 2) + (this.w/2)) {
+				let bossPosition = createVector(200, 0);
+				let sawPosition = createVector(this.x, this.y);
+				let sawVelocity = createVector(this.xSpeed, this.ySpeed);
+				let line = p5.Vector.sub(sawPosition, bossPosition);
+				line.setMag((150 / 2) + (this.w/2));
+				line.add(bossPosition);
+				this.x = line.x;
+				this.y = line.y;
+
+				// Compute the normal vector from dome center to the ball
+				let normalVector = p5.Vector.sub(sawPosition, bossPosition);
+				normalVector.normalize();
+
+				// Reflect the velocity over the normal vector
+				let dot = sawVelocity.dot(normalVector);
+				let reflection = p5.Vector.sub(sawVelocity, p5.Vector.mult(normalVector, 2 * dot));
+				reflection.div(2);
+				// Set the new velocity
+				this.setSpeed(reflection.x, reflection.y);
+				bosses[0].health -= 5;
+			}
+			this.hit = true;
+		}
 		this.x += this.xSpeed;
 		this.y += this.ySpeed;
+
 
 		if (hit == true && !this.isBlaster) {
 			this.ySpeed *= 0.60;
 			this.xSpeed *= 0.60;
-			this.hitCount ++;
+			this.hitCount++;
 		}
 		if (dist(this.x, this.y, player.x, player.y) > 40) {
 			this.gotFar = true;
@@ -85,9 +111,9 @@ class Saw {
 			}
 		}
 
-		if(this.hitCount == 4){
-			for(let i = 0; i < heldPowerups.length; i++){
-				if(heldPowerups[i].type == TBOUNCE){
+		if (this.hitCount == 4) {
+			for (let i = 0; i < heldPowerups.length; i++) {
+				if (heldPowerups[i].type == TBOUNCE) {
 					heldPowerups[i].activate();
 				}
 			}

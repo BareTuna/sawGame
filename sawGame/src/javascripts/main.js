@@ -10,6 +10,7 @@ const TTOVER = 3;
 const LEVELS = 4;
 const SURVIVE = 5;
 const SURVIVEOVER = 6;
+const PAUSE = 7;
 //enemy types
 const CHASER = 0;
 const BULLET = 1;
@@ -36,6 +37,7 @@ const allPerks = [PRICKLY, MOLASSES, MATCHALATTE, BREATHER, TBOUNCE];
 //boss types
 const COLUMNLORD = 0;
 const BULLETSTORM = 1;
+const DREVIL = 2;
 let scene = MENU;
 let letChoose = false;
 let menuButtons = [new Button(200, 200, 150, 25, "Time trial", () => {
@@ -87,10 +89,11 @@ let surviveOverButtons = [new Button(200, 300, 150, 25, "Try Again? (space)", ()
 }), new Button(200, 335, 100, 25, "Menu", () => scene = MENU)]
 const COLUMNSTAGE = 4;
 const BULLETSTAGE = 9;
+const DREVILSTAGE = 14;
 let ttTimer = 0;
 let spawnTime = 50;
 let breatheTimer = 0;
-let stageBreaks = [10, 25, 40, 55, COLUMNSTAGE, 70, 85, 100, 115, BULLETSTAGE, 130, 145, 160, 175, 190];
+let stageBreaks = [10, 25, 40, 55, 56, 70, 85, 100, 115, 116, 130, 145, 160, 175, 176, 190, 205, 220];
 // let stageBreaks = [0, 3, 40, 55, COLUMNSTAGE, 70, 85, 90, 105, 120, 135, 150, 165, 180];
 // let stageBreaks = [0, BULLETSTAGE, 25, 40, 55, 70, 85, 90, 105, COLUMNSTAGE, 120, 135, 150, 165, 180];
 
@@ -131,6 +134,8 @@ function draw() {
 		surviveDraw();
 	} else if (scene == SURVIVEOVER) {
 		surviveOverDraw();
+	} else if (scene == PAUSE){
+		pauseDraw();
 	}
 }
 
@@ -229,7 +234,7 @@ function surviveDraw() {
 	////////////////////
 	//How to get to the next stage
 	if (score >= stageBreaks[stage] && breatheTimer < 0) {
-		if (stage != COLUMNSTAGE) {
+		if (stage != COLUMNSTAGE || stage != BULLETSTAGE || stage != DREVILSTAGE) {
 			breatheTimer = 80;
 		}
 	}
@@ -252,13 +257,19 @@ function surviveDraw() {
 			v2.x += 200;
 			v2.y += 200;
 		}
-		if (breatheTimer <= 0 && letChoose == false) {
+		let potentialPointCount = 0;
+		for(let i = 0; i < enemies.length; i++){
+			if(enemies[i].killable){
+				potentialPointCount++;
+			}
+		}
+		if (breatheTimer <= 0 && letChoose == false && (potentialPointCount + score < stageBreaks[stage] || stage == COLUMNSTAGE || stage == BULLETSTAGE || stage == DREVILSTAGE)) {
 			if (bosses.length <= 0) {
 				if (Math.random() > 0.5 && score >= stageBreaks[0]) {
 					spawn(v2.x, v2.y, BULLET);
 				} else {
 					if (stage > COLUMNSTAGE) {
-						if (Math.random() > 0.5) {
+						if (Math.random() > 0.5) { 
 							spawn(v2.x, v2.y, TRACER);
 						} else {
 							spawn(v2.x, v2.y, CHASER);
@@ -283,7 +294,8 @@ function surviveDraw() {
 					spawn(v2.x, v2.y, BULLET);
 					ttTimer = 18;
 					bosses[0].health -= 1;
-					console.log(bosses[0].health);
+				}else if(bosses[0].type == DREVILSTAGE){
+					bosses[0]
 				}
 			}
 			// testBoss.attack();
@@ -411,7 +423,9 @@ function surviveDraw() {
 					bosses.push(new Boss(COLUMNLORD));
 				} else if (stage == BULLETSTAGE) {
 					bosses.push(new Boss(BULLETSTORM));
-				} else {
+				} else if(stage == DREVILSTAGE){
+					bosses.push(new Boss(DREVIL));
+				}else {
 					spawnTime -= 2;
 				}
 			}
@@ -460,7 +474,7 @@ function surviveDraw() {
 	pop();
 	////////////
 	//When do i show the breathe timer text
-	if (breatheTimer > 0 && enemies.length == 0) {
+	if (breatheTimer > 0 && enemies.length == 0 && (score >= stageBreaks[stage] || stage == COLUMNSTAGE || stage == BULLETSTAGE || stage == DREVIL)) {
 		push();
 		text("BREATHE", 200, 200);
 		pop();
@@ -486,7 +500,7 @@ function surviveDraw() {
 				for (let i = 0; i < heldPowerups.length; i++) {
 					if (heldPowerups[i].isPerk) {
 						if (heldPowerups[i].type == randomPerk) {
-							randomPerk = Math.floor(Math.random() * allPerks.length) + allPowerUps.length;
+							randomPerk = Math.floor(Math.random() * (allPerks.length + 1)) + allPowerUps.length;
 							i = 0;
 						}
 					}
@@ -521,6 +535,7 @@ function surviveDraw() {
 	// if (dist(player.x, player.y, saw.x, saw.y) >= 70) {
 	// 	saw.return = true;
 	// }
+	// console.log(breatheTimer);
 }
 
 function surviveOverDraw() {
@@ -536,6 +551,10 @@ function surviveOverDraw() {
 	for (let i = 0; i < surviveOverButtons.length; i++) {
 		surviveOverButtons[i].show();
 	}
+}
+
+function pauseDraw(){
+	text("PAUSED", 200, 200);
 }
 
 function mousePressed() {
@@ -618,6 +637,15 @@ function keyPressed() {
 					break;
 				}
 			}
+		}
+	}
+	if(keyCode === 69 && (scene == SURVIVE || scene == PAUSE)){
+		score = 174;
+		stage = DREVILSTAGE - 1;
+		if(scene == SURVIVE){
+			scene = PAUSE;
+		}else{
+			scene = SURVIVE;
 		}
 	}
 }
