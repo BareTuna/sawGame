@@ -33,7 +33,9 @@ class Player {
 				}
 			}
 		}
-		ellipse(this.x, this.y, this.w, this.w);
+		// ellipse(this.x, this.y, this.w, this.w);
+		imageMode(CENTER);
+		image(img, this.x, this.y-15, this.w + 30, this.w + 30);
 		pop();
 
 		for (let i = 0; i < this.lives; i++) {
@@ -105,7 +107,9 @@ class Player {
 			if (this.xSpeed > -this.maxSpeed) {
 				this.xSpeed -= this.xAcc;
 			}
-		} else if (keyIsDown(68)) {
+		}
+		
+		if (keyIsDown(68)) {
 			if (this.xSpeed < this.maxSpeed) {
 				this.xSpeed += this.xAcc;
 			}
@@ -123,16 +127,18 @@ class Player {
 			}
 		}
 
+		let friction = 0.2;
+
 		if (this.xSpeed > 0) {
-			this.xSpeed -= 0.2;
+			this.xSpeed -= friction;
 		} else {
-			this.xSpeed += 0.2;
+			this.xSpeed += friction;
 		}
 
 		if (this.ySpeed > 0) {
-			this.ySpeed -= 0.2;
+			this.ySpeed -= friction;
 		} else {
-			this.ySpeed += 0.2;
+			this.ySpeed += friction;
 		}
 	}
 
