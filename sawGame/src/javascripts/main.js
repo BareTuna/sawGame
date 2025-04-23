@@ -107,7 +107,7 @@ let bosses = [];
 
 // let testBoss = new Boss(COLUMNLORD);
 function preload() {
-	//enemyIdle = loadImage('enemy idle.gif');
+	img = loadImage('/images/whestler.png');
 }
 
 function setup() {
@@ -251,7 +251,7 @@ function surviveDraw() {
 		v2.mult(225);
 		v2.x += 200;
 		v2.y += 200;
-		while (dist(player.x, player.y, v2.x, v2.y) <= 250) {
+		while (dist(player.x, player.y, v2.x, v2.y) <= 275) {
 			v2 = goToward(200, 200, random(20, 380), random(20, 380));
 			v2.mult(225);
 			v2.x += 200;
