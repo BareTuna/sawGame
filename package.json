@@ -1,8 +1,7 @@
 {
-  "name": "project-starter",
-  "author": "Abdulmalek Al-Gahmi",
+  "name": "glory-in-the-ring",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "license": "MIT",
   "scripts": {
     "clean": "rimraf dist",
