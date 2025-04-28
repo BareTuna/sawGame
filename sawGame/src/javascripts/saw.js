@@ -2,7 +2,7 @@ class Saw {
 	constructor(x, y, isBlaster = false, ttl = -1) {
 		this.x = x;
 		this.y = y;
-		this.w = 20;
+		this.w = 20 * 1.375;
 		this.xSpeed = 4.5;
 		this.ySpeed = 4.5;
 		this.going = false;
@@ -18,25 +18,25 @@ class Saw {
 		if (this.ttl > 0) {
 			this.ttl--;
 		}
-		if (this.x >= 400 - this.w / 2) {
+		if (this.x >= RIGHTWALL - this.w / 2) {
 			this.xSpeed *= -1;
-			this.x = 400 - this.w / 2;
+			this.x = RIGHTWALL - this.w / 2;
 			hit = true;
 		}
-		if (this.x <= 0 + this.w / 2) {
+		if (this.x <= LEFTWALL + this.w / 2) {
 			this.xSpeed *= -1;
-			this.x = 0 + this.w / 2;
+			this.x = LEFTWALL + this.w / 2;
 			hit = true;
 		}
-		if (this.y >= 400 - this.w / 2) {
+		if (this.y >= FLOOR - this.w / 2) {
 			this.ySpeed *= -1;
-			this.y = 400 - this.w / 2;
+			this.y = FLOOR - this.w / 2;
 			hit = true;
 		}
 		if (stage == COLUMNSTAGE) {
-			if (this.y <= 100 + this.w / 2) {
+			if (this.y <= (100 * 1.375) + this.w / 2) {
 				this.ySpeed *= -1;
-				this.y = 100 + this.w / 2;
+				this.y = (100 * 1.375) + this.w / 2;
 				hit = true;
 				if (bosses.length >= 1) {
 					if (bosses[0].type == COLUMNLORD) {
@@ -45,9 +45,9 @@ class Saw {
 				}
 			}
 		} else {
-			if (this.y <= 0 + this.w / 2) {
+			if (this.y <= CEILING + this.w / 2) {
 				this.ySpeed *= -1;
-				this.y = 0 + this.w / 2;
+				this.y = CEILING + this.w / 2;
 				hit = true;
 			}
 		}
@@ -85,10 +85,10 @@ class Saw {
 			this.xSpeed *= 0.60;
 			this.hitCount++;
 		}
-		if (dist(this.x, this.y, player.x, player.y) > 40) {
+		if (dist(this.x, this.y, player.x, player.y) > 40 * 1.375) {
 			this.gotFar = true;
 		}
-		if (dist(this.x, this.y, player.x, player.y) < 40 && this.gotFar) {
+		if (dist(this.x, this.y, player.x, player.y) < 40 * 1.375 && this.gotFar) {
 			this.going = true;
 		} else {
 			this.going = false;
@@ -106,7 +106,7 @@ class Saw {
 			let cringe = goToward(this.x, this.y, player.x, player.y);
 			this.xSpeed = cringe.x * 7;
 			this.ySpeed = cringe.y * 7;
-			if ((dist(this.x, this.y, player.x, player.y) < 40 && this.gotFar) || player.hasSaw == true) {
+			if ((dist(this.x, this.y, player.x, player.y) < 40 * 1.375 && this.gotFar) || player.hasSaw == true) {
 				this.return = false;
 			}
 		}
@@ -121,7 +121,7 @@ class Saw {
 		}
 	}
 	check(x, y) {
-		if (dist(this.x, this.y, x, y) < 20) {
+		if (dist(this.x, this.y, x, y) < 20 * 1.375) {
 			return true;
 		}
 	}
@@ -130,12 +130,12 @@ class Saw {
 		if (this.isBlaster) {
 			push();
 			fill(200, 200, 255);
-			ellipse(this.x, this.y, 20, 20);
+			ellipse(this.x, this.y, 20 * 1.375, 20 * 1.375);
 			pop();
 		} else {
 			push();
 			fill(200, 255, 200);
-			ellipse(this.x, this.y, 20, 20);
+			ellipse(this.x, this.y, 20 * 1.375, 20 * 1.375);
 			pop();
 		}
 	}

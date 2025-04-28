@@ -3,6 +3,13 @@ let saw = new Saw(200, 200);
 let enemies = [];
 let score = 0;
 let enemyIdle;
+//barriers
+const LEFTWALL = 225;
+const RIGHTWALL = 775;
+const CEILING = 25;
+const FLOOR = 575;
+const RINGWIDTH = 550;
+const RINGHEIGHT = 550;
 // scenes
 const MENU = 1;
 const TIMETRIAL = 2;
@@ -40,23 +47,23 @@ const BULLETSTORM = 1;
 const DREVIL = 2;
 let scene = MENU;
 let letChoose = false;
-let menuButtons = [new Button(200, 200, 150, 25, "Time trial", () => {
+let menuButtons = [new Button(RINGWIDTH/2 + LEFTWALL, 200, 150, 25, "Time trial", () => {
 	scene = TIMETRIAL;
 	ttTimer = 0;
 	score = 0;
 	player.hasSaw = true;
-	player.x = 200;
-	player.y = 200;
+	player.x = RINGWIDTH/2 + LEFTWALL;
+	player.y = RINGWIDTH/2 + LEFTWALL;
 	for (let i = 0; i < 3; i++) {
 		enemies.push(new Enemy(random(20, 380), random(20, 380), i, CHASER));
 	}
-}), new Button(200, 230, 150, 25, "Levels", () => scene = LEVELS), new Button(200, 260, 150, 25, "Survival", () => {
+}), new Button(RINGWIDTH/2 + LEFTWALL, 230, 150, 25, "Levels", () => scene = LEVELS), new Button(RINGWIDTH/2 + LEFTWALL, 260, 150, 25, "Survival", () => {
 	scene = SURVIVE
 	scene = SURVIVE
 	score = 0;
 	player.hasSaw = true;
-	player.x = 200;
-	player.y = 200;
+	player.x = RINGWIDTH/2 + LEFTWALL;
+	player.y = FLOOR - RINGHEIGHT/2;
 	spawnTime = 50;
 	breatheTimer = -1;
 	enemies = [];
@@ -68,14 +75,14 @@ let menuButtons = [new Button(200, 200, 150, 25, "Time trial", () => {
 	hurtTimer = 0;
 	bosses = [];
 })];
-let ttOverButtons = [new Button(200, 300, 150, 25, "Try Again? (space)", () => scene = TIMETRIAL), new Button(200, 335, 100, 25, "Menu", () => scene = MENU)];
-let levelButtons = [new Button(200, 300, 150, 25, "Menu", () => scene = MENU)];
-let surviveOverButtons = [new Button(200, 300, 150, 25, "Try Again? (space)", () => {
+let ttOverButtons = [new Button(RINGWIDTH/2 + LEFTWALL, 300, 150, 25, "Try Again? (space)", () => scene = TIMETRIAL), new Button(200, 335, 100, 25, "Menu", () => scene = MENU)];
+let levelButtons = [new Button(RINGWIDTH/2 + LEFTWALL, 300, 150, 25, "Menu", () => scene = MENU)];
+let surviveOverButtons = [new Button(RINGWIDTH/2 + LEFTWALL, 300, 150, 25, "Try Again? (space)", () => {
 	scene = SURVIVE
 	score = 0;
 	player.hasSaw = true;
-	player.x = 200;
-	player.y = 200;
+	player.x = RINGWIDTH/2 + LEFTWALL;
+	player.y = FLOOR - RINGHEIGHT/2;
 	spawnTime = 50;
 	breatheTimer = -1;
 	enemies = [];
@@ -86,7 +93,7 @@ let surviveOverButtons = [new Button(200, 300, 150, 25, "Try Again? (space)", ()
 	player.lives = 3;
 	hurtTimer = 0;
 	bosses = [];
-}), new Button(200, 335, 100, 25, "Menu", () => scene = MENU)]
+}), new Button(RINGWIDTH/2 + LEFTWALL, 335, 100, 25, "Menu", () => scene = MENU)]
 const COLUMNSTAGE = 4;
 const BULLETSTAGE = 9;
 const DREVILSTAGE = 14;
@@ -111,7 +118,7 @@ function preload() {
 }
 
 function setup() {
-	const myCanvas = createCanvas(400, 400);
+	const myCanvas = createCanvas(1000, 600);
 	myCanvas.parent('canvasDiv');
 	powerUpTimer = random(300, 500);
 	noSmooth();
@@ -121,7 +128,8 @@ function setup() {
 }
 
 function draw() {
-	background(220);
+	background(0);
+	rect(225,25,550,550);
 	if (scene == MENU) {
 		menuDraw();
 	} else if (scene == TIMETRIAL) {
@@ -145,9 +153,9 @@ function ttOverDraw() {
 	fill(255, 255, 255);
 	strokeWeight(2);
 	rectMode(CENTER);
-	rect(200, 260, 80, 20);
+	rect(RINGWIDTH/2 + LEFTWALL, 260, 80, 20);
 	fill(0);
-	text("Score: " + score, 190, 264)
+	text("Score: " + score, RINGWIDTH/2 + LEFTWALL, 264)
 	pop();
 	for (let i = 0; i < ttOverButtons.length; i++) {
 		ttOverButtons[i].show();
@@ -168,7 +176,7 @@ function levelsDraw() {
 function menuDraw() {
 	textAlign(CENTER);
 	score = 0;
-	text("Saw Game :D", 200, 100);
+	text("Saw Game :D", RINGWIDTH/2 + LEFTWALL, 100);
 	for (let i = 0; i < menuButtons.length; i++) {
 		menuButtons[i].show();
 	}
@@ -247,15 +255,15 @@ function surviveDraw() {
 		} else {
 			ttTimer += spawnTime;
 		}
-		let v2 = goToward(200, 200, random(20, 380), random(20, 380));
-		v2.mult(225);
-		v2.x += 200;
-		v2.y += 200;
+		let v2 = goToward(RINGWIDTH/2 + LEFTWALL, RINGHEIGHT/2 + CEILING, random(LEFTWALL+20, RIGHTWALL-20), random(LEFTWALL+20, RIGHTWALL-20));
+		v2.mult(300);
+		v2.x += RINGWIDTH/2 + LEFTWALL;
+		v2.y += RINGHEIGHT/2 + CEILING;
 		while (dist(player.x, player.y, v2.x, v2.y) <= 275) {
-			v2 = goToward(200, 200, random(20, 380), random(20, 380));
-			v2.mult(225);
-			v2.x += 200;
-			v2.y += 200;
+			v2 = goToward(RINGWIDTH/2 + LEFTWALL, RINGHEIGHT/2 + CEILING, random(LEFTWALL+20, RIGHTWALL-20), random(LEFTWALL+20, RIGHTWALL-20));
+			v2.mult(250);
+			v2.x += RINGWIDTH/2 + LEFTWALL;
+			v2.y += RINGHEIGHT/2 + CEILING;
 		}
 		let potentialPointCount = 0;
 		for(let i = 0; i < enemies.length; i++){
@@ -285,10 +293,10 @@ function surviveDraw() {
 						ttTimer = 80;
 					} else if (bosses[0].health < 40 && bosses[0].health > 20) {
 						bosses[0].columnAttack();
-						ttTimer = 115;
+						ttTimer = 130;
 					} else {
 						bosses[0].zigZagAttack();
-						ttTimer = 40;
+						ttTimer = 50;
 					}
 				}else if(bosses[0].type == BULLETSTORM){
 					spawn(v2.x, v2.y, BULLET);
@@ -360,7 +368,7 @@ function surviveDraw() {
 						let closestI = 0;
 						for (let i = 0; i < enemies.length; i++) {
 							if (dist(saw.x, saw.y, enemies[i].x, enemies[i].y) < closestDist && enemies[i].killable) {
-								if (enemies[i].x >= 0 && enemies[i].x <= 400 && enemies[i].y >= 0 && enemies[i].y <= 400) {
+								if (enemies[i].x >= LEFTWALL && enemies[i].x <= RIGHTWALL && enemies[i].y >= 0 && enemies[i].y <= RIGHTWALL) {
 									closestDist = dist(saw.x, saw.y, enemies[i].x, enemies[i].y);
 									closestI = i;
 								}
@@ -436,7 +444,7 @@ function surviveDraw() {
 		if (heldPowerups[i].isPerk) {
 			modifier += heldPowerups[i].w;
 		}
-		heldPowerups[i].show(i * (heldPowerups[i].w + 5) + 15 - modifier, 15);
+		heldPowerups[i].show(i * (heldPowerups[i].w + 5) + 15 + LEFTWALL - modifier, CEILING + 20);
 		if (heldPowerups[i].type == ONEUP) {
 			heldPowerups[i].activate();
 			heldPowerups.splice(i, 1);
@@ -468,15 +476,15 @@ function surviveDraw() {
 	push();
 	fill(255, 255, 255);
 	strokeWeight(2);
-	rect(322, 10, 80, 20);
+	rect(RIGHTWALL - 100, CEILING + 20, 80, 20);
 	fill(0);
-	text("Score: " + score, 350, 25);
+	text("Score: " + score, RIGHTWALL - 70, CEILING + 35);
 	pop();
 	////////////
 	//When do i show the breathe timer text
 	if (breatheTimer > 0 && enemies.length == 0 && (score >= stageBreaks[stage] || stage == COLUMNSTAGE || stage == BULLETSTAGE || stage == DREVIL)) {
 		push();
-		text("BREATHE", 200, 200);
+		text("BREATHE", RINGWIDTH/2 + LEFTWALL, 200);
 		pop();
 		breatheTimer--;
 		letChoose = true;
@@ -485,7 +493,7 @@ function surviveDraw() {
 	if (letChoose && breatheTimer == 0) {
 		if (fieldUpgrades.length == 0) {
 			let randomPowerup = Math.floor(Math.random() * allPowerUps.length);
-			fieldUpgrades.push(new Powerup(125, 200, randomPowerup));
+			fieldUpgrades.push(new Powerup(RINGWIDTH/2 + LEFTWALL - 75, 200, randomPowerup));
 			let perkCount = 0;
 			for (let i = 0; i < heldPowerups.length; i++) {
 				if (heldPowerups[i].isPerk) {
@@ -494,7 +502,7 @@ function surviveDraw() {
 			}
 
 			if (perkCount >= allPerks.length || Math.random() < 0.5) {
-				fieldUpgrades.push(new Powerup(275, 200, Math.floor(Math.random() * 4)));
+				fieldUpgrades.push(new Powerup(RINGWIDTH/2 + LEFTWALL + 75, 200, Math.floor(Math.random() * 4)));
 			} else {
 				let randomPerk = Math.floor(Math.random() * (allPerks.length + 1)) + allPowerUps.length;
 				for (let i = 0; i < heldPowerups.length; i++) {
@@ -505,10 +513,10 @@ function surviveDraw() {
 						}
 					}
 				}
-				fieldUpgrades.push(new Powerup(275, 200, randomPerk, true));
+				fieldUpgrades.push(new Powerup(RINGWIDTH/2 + LEFTWALL + 75, 200, randomPerk, true));
 			}
 
-			player.x = 200;
+			player.x = RINGWIDTH/2 + LEFTWALL;
 			player.y = 350;
 			player.xSpeed = 0;
 			player.ySpeed = 0;
@@ -536,6 +544,16 @@ function surviveDraw() {
 	// 	saw.return = true;
 	// }
 	// console.log(breatheTimer);
+
+	//Rectangles for pretty :)
+	push();
+	fill(0);
+	rect(0,0,(1000-550)/2,600);
+	rect(LEFTWALL, FLOOR, RINGWIDTH, 25);
+	rect(LEFTWALL, 0, RINGWIDTH, 25);
+	rect(RIGHTWALL, 0, (1000-550)/2,600);
+	pop();
+	
 }
 
 function surviveOverDraw() {
@@ -544,9 +562,9 @@ function surviveOverDraw() {
 	fill(255, 255, 255);
 	strokeWeight(2);
 	rectMode(CENTER);
-	rect(200, 260, 80, 20);
+	rect(RINGWIDTH/2 + LEFTWALL, 200, 80, 20);
 	fill(0);
-	text("Score: " + score, 190, 264)
+	text("Score: " + score, RINGWIDTH/2 + LEFTWALL, 206)
 	pop();
 	for (let i = 0; i < surviveOverButtons.length; i++) {
 		surviveOverButtons[i].show();
@@ -640,11 +658,16 @@ function keyPressed() {
 		}
 	}
 	if(keyCode === 69 && (scene == SURVIVE || scene == PAUSE)){
+		
 		if(scene == SURVIVE){
 			scene = PAUSE;
 		}else{
 			scene = SURVIVE;
 		}
+	}
+	if(keyCode === 70){
+		stage = COLUMNSTAGE-1;
+		score = stageBreaks[COLUMNSTAGE] - 2;
 	}
 }
 
