@@ -3,10 +3,15 @@ class Boss {
         this.type = type;
         this.toggle = false;
         this.health = 60;
+        this.type = type;
+        this.toggle = false;
+        this.health = 60;
         if (this.type == BULLETSTORM) {
+            this.health = 130;
             this.health = 130;
         }
         if (this.type == DREVIL) {
+            this.health = 100;
             this.health = 100;
         }
     }
@@ -28,6 +33,7 @@ class Boss {
                 pop();
             }
         }
+    }
         if (this.type == BULLETSTORM) {
             if (this.health >= 120) {
                 text("Survive!", 200, 200);
@@ -63,6 +69,7 @@ class Boss {
     barsAttack() {
         if (this.toggle) {
             for (let i = 0; i < 8; i++) {
+
                 let xTarget = (i * 25 * 1.375) + 20 + LEFTWALL;
                 spawn(xTarget, 10, BULLETBARRIER, xTarget, 450);
             }
@@ -77,6 +84,7 @@ class Boss {
     }
 
     columnAttack() {
+
         let hole = Math.floor(Math.random() * 12);
         for (let j = -3; j < 2; j++) {
             for (let i = 0; i < 12; i++) {
@@ -90,18 +98,20 @@ class Boss {
 
     zigZagAttack() {
         let dist = 75;
+
         if (this.toggle) {
             for (let i = 0; i < 8; i++) {
                 let xTarget = (i * dist) + 75/2 + LEFTWALL;
                 spawn(xTarget, 10, BULLETBARRIER, xTarget, 450);
             }
             this.toggle = false;
+
         } else {
             for (let i = 0; i < 8; i++) {
-                let xTarget = (i * dist) + LEFTWALL;
                 spawn(xTarget, 10, BULLETBARRIER, xTarget, 450);
             }
             this.toggle = true;
+
         }
     }
 }
