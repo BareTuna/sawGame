@@ -5,7 +5,7 @@ class Enemy {
         this.id = i;
         this.dx = 0;
         this.dy = 0;
-        this.w = 20;
+        this.w = 20 * 1.375;
         this.type = type;
         this.targetX = targetX;
         this.targetY = targetY;
@@ -65,6 +65,14 @@ class Enemy {
             }
         }
         this.allPatterns = [this.xPattern, this.sweepPattern, this.rotatedSweepPattern, this.spiralPattern];
+        for(let i = 0; i < this.allPatterns.length; i++){
+			for(let j = 0; j < this.allPatterns[i].length; j++){
+				this.allPatterns[i][j].x *= 1.375;
+				this.allPatterns[i][j].y *= 1.375;
+				this.allPatterns[i][j].x += LEFTWALL;
+				this.allPatterns[i][j].y += CEILING;
+			}
+		}
         this.thisPattern = Math.floor(Math.random() * this.allPatterns.length);
         this.currentPatternSpot = 0;
         if (this.type == BULLET) {
@@ -119,12 +127,12 @@ class Enemy {
         }
     }
     check(x, y) {
-        if (dist(this.x, this.y, x, y) < 20 && this.type != BULLET && this.type != BULLETBARRIER) {
+        if (dist(this.x, this.y, x, y) < 20 * 1.375 && this.type != BULLET && this.type != BULLETBARRIER) {
             kill(this.id);
             return true;
         } else {
             if (this.type == BULLET) {
-                if (dist(this.x, this.y, 200, 200) >= 500) {
+				if(dist(this.x, this.y, LEFTWALL + RINGWIDTH/2, CEILING + RINGHEIGHT/2) >= 700){
                     kill(this.id);
                 }
             }
