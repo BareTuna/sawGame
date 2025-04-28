@@ -1,15 +1,21 @@
 class Player {
-	constructor() {
-		this.x = 200;
+		constructor() {
+		const LEFTWALL = 225;
+		const RIGHTWALL = 775;
+		const CEILING = 25;
+		const FLOOR = 575;
+		const RINGWIDTH = 550;
+		const RINGHEIGHT = 550;
+		this.x = RINGWIDTH/2 + LEFTWALL;
 		this.xSpeed = 0;
 		this.xAcc = 0.5;
-		this.y = 200;
+		this.y = RINGHEIGHT/2 + CEILING;
 		this.ySpeed = 0;
 		this.yAcc = 0.5;
-		this.maxSpeed = 3.5;
+		this.maxSpeed = 4 * 1.375;
 		this.hasSaw = false;
-		this.w = 20;
-		this.lives = 3;
+		this.w = 20 * 1.375;
+		this.lives = 20;
 		this.lifeTimer = 0;
 		this.rageTimer = 0;
 	}
@@ -33,15 +39,15 @@ class Player {
 				}
 			}
 		}
-		// ellipse(this.x, this.y, this.w, this.w);
-		imageMode(CENTER);
-		image(img, this.x, this.y-15, this.w + 30, this.w + 30);
+		ellipse(this.x, this.y, this.w, this.w);
+		//imageMode(CENTER);
+		//image(img, this.x, this.y-15, this.w + 30, this.w + 30);
 		pop();
 
 		for (let i = 0; i < this.lives; i++) {
 			push();
 			fill(255, 0, 0);
-			ellipse(15 + i * 15, 40, this.w / 2, this.w / 2);
+			ellipse(LEFTWALL + 15 + i * 15, CEILING + 40, this.w / 2, this.w / 2);
 			pop();
 		}
 
@@ -74,26 +80,25 @@ class Player {
 	}
 
 	checkWalls() {
-		if (this.x >= 390) {
+		if (this.x >= RIGHTWALL - this.w/2) {
 			this.x -= this.xSpeed;
 			this.xSpeed = 0;
 		}
 
-		if (this.x <= 10) {
+		if (this.x <= LEFTWALL + this.w/2) {
 			this.x -= this.xSpeed;
 			this.xSpeed = 0;
 		}
 
-		if (this.y <= (stage == COLUMNSTAGE ? 110 : 10)) {
+		if (this.y <= (stage == COLUMNSTAGE ? (100 * 1.375) + CEILING : CEILING) + this.w/2) {
 			this.y -= this.ySpeed;
 			this.ySpeed = 0;
 		}
 
-		if (this.y >= 390) {
+		if (this.y >= FLOOR - this.w/2) {
 			this.y -= this.ySpeed;
 			this.ySpeed = 0;
 		}
-
 	}
 
 	drawLine() {
