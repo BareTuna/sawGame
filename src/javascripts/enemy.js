@@ -142,9 +142,14 @@ class Enemy {
                     kill(this.id);
                     return true;
                 }
-                if (!this.sticky && dist(this.x, this.y, x, y) < 20 * 1.375 * 3) {
-                    this.speed *= 0.6;
-                    this.sticky = true;
+                for(let i = 0; i < heldPowerups.length; i++){
+                    if(heldPowerups[i].type == MOLASSES){
+                        if (!this.sticky && dist(this.x, this.y, x, y) < 20 * 1.375 * 3) {
+                            this.speed *= 0.6;
+                            this.sticky = true;
+                        }
+                        break;
+                    }
                 }
                 return false;
         }

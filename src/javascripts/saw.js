@@ -126,7 +126,7 @@ class Saw {
 		}
 	}
 	show() {
-		if (heldPowerups.some(powerup => powerup.type == MOLASSES)) {
+		if (heldPowerups.some(powerup => powerup.type == MOLASSES) && !this.isBlaster) {
 			push();
 			noStroke();
 			fill(125, 20, 0, 50);
