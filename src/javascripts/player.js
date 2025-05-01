@@ -12,7 +12,7 @@ class Player {
     this.y = RINGHEIGHT/2 + CEILING;
     this.ySpeed = 0;
     this.yAcc = 0.5;
-    this.setMaxSpeed = 3.75;
+    this.setMaxSpeed = 4.25;
     this.maxSpeed = 0;
     this.hasSaw = false;
     this.w = 20 * 1.375;
