@@ -127,16 +127,23 @@ class Enemy {
         }
     }
     check(x, y) {
-        if (dist(this.x, this.y, x, y) < 20 * 1.375 && this.type != BULLET && this.type != BULLETBARRIER) {
-            kill(this.id);
-            return true;
-        } else {
-            if (this.type == BULLET) {
-				if(dist(this.x, this.y, LEFTWALL + RINGWIDTH/2, CEILING + RINGHEIGHT/2) >= 700){
+        switch (this.type) {
+            case BULLET:
+                if (dist(this.x, this.y, LEFTWALL + RINGWIDTH / 2, CEILING + RINGHEIGHT / 2) >= 700) {
                     kill(this.id);
                 }
-            }
-            return false;
+                return false;
+            case BULLETBARRIER:
+                return false;
+            default:
+                if (dist(this.x, this.y, x, y) < this.w) {
+                    kill(this.id);
+                    return true;
+                }
+                if (dist(this.x, this.y, x, y) < this.w * 3) {
+                    this.speed = 0.3;
+                }
+                return false;
         }
     }
     update(x, y) {
