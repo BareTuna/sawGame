@@ -107,6 +107,7 @@ class Enemy {
             }
         }
 
+        this.sticky = false;
         for (let i = 0; i < heldPowerups.length; i++) {
             if (heldPowerups[i].type == MOLASSES) {
                 this.speed *= 0.8;
@@ -136,12 +137,13 @@ class Enemy {
             case BULLETBARRIER:
                 return false;
             default:
-                if (dist(this.x, this.y, x, y) < this.w) {
+                if (dist(this.x, this.y, x, y) < 20 * 1.375) {
                     kill(this.id);
                     return true;
                 }
-                if (dist(this.x, this.y, x, y) < this.w * 3) {
-                    this.speed = 0.3;
+                if (!this.sticky && dist(this.x, this.y, x, y) < 20 * 1.375 * 3) {
+                    this.speed *= 0.6;
+                    this.sticky = true;
                 }
                 return false;
         }
