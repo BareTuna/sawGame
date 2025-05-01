@@ -108,6 +108,7 @@ class Enemy {
             }
         }
 
+        this.sticky = false;
         for (let i = 0; i < heldPowerups.length; i++) {
             if (heldPowerups[i].type == MOLASSES) {
                 this.speed *= 0.8;
@@ -128,16 +129,24 @@ class Enemy {
         }
     }
     check(x, y) {
-        if (dist(this.x, this.y, x, y) < 20 * 1.375 && this.type != BULLET && this.type != BULLETBARRIER && this.killable) {
-            kill(this.id);
-            return true;
-        } else {
-            if (this.type == BULLET) {
-				if(dist(this.x, this.y, LEFTWALL + RINGWIDTH/2, CEILING + RINGHEIGHT/2) >= 700){
+        switch (this.type) {
+            case BULLET:
+                if (dist(this.x, this.y, LEFTWALL + RINGWIDTH / 2, CEILING + RINGHEIGHT / 2) >= 700) {
                     kill(this.id);
                 }
-            }
-            return false;
+                return false;
+            case BULLETBARRIER:
+                return false;
+            default:
+                if (dist(this.x, this.y, x, y) < 20 * 1.375) {
+                    kill(this.id);
+                    return true;
+                }
+                if (!this.sticky && dist(this.x, this.y, x, y) < 20 * 1.375 * 3) {
+                    this.speed *= 0.6;
+                    this.sticky = true;
+                }
+                return false;
         }
     }
     update(x, y) {

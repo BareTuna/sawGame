@@ -22,7 +22,7 @@ class Powerup {
             this.description = "Launches projectiles on damage.";
         }
         if (this.type == MOLASSES) {
-            this.description = "Covers the ring in sticky molasses, slowing enemies down.";
+            this.description = "Covers the ring and your partner in sticky molasses, slowing enemies down.";
         }
         if (this.type == MATCHALATTE) {
             this.description = "Energizes you to move faster in the ring.";

@@ -126,7 +126,13 @@ class Saw {
 		}
 	}
 	show() {
-
+		if (heldPowerups.some(powerup => powerup.type == MOLASSES)) {
+			push();
+			noStroke();
+			fill(125, 20, 0, 50);
+			ellipse(this.x, this.y, this.w * 3);
+			pop();
+		}
 		if (this.isBlaster) {
 			push();
 			fill(200, 200, 255);
