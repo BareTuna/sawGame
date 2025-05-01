@@ -34,9 +34,9 @@ class Saw {
 			hit = true;
 		}
 		if (stage == COLUMNSTAGE) {
-			if (this.y <= (100 * 1.375) + this.w / 2) {
+			if (this.y <= (100 * 1.375) + this.w * 1.5) {
 				this.ySpeed *= -1;
-				this.y = (100 * 1.375) + this.w / 2;
+				this.y = (100 * 1.375) + this.w * 1.5;
 				hit = true;
 				if (bosses.length >= 1) {
 					if (bosses[0].type == COLUMNLORD) {
@@ -52,8 +52,8 @@ class Saw {
 			}
 		}
 		if (stage == DREVILSTAGE && bosses.length > 0) {
-			if (dist(this.x, this.y, 200, 0) < (150 / 2) + (this.w/2)) {
-				let bossPosition = createVector(200, 0);
+			if (dist(this.x, this.y, bosses[0].x, bosses[0].y) < (150 / 2) + (this.w/2)) {
+				let bossPosition = createVector(bosses[0].x, bosses[0].y);
 				let sawPosition = createVector(this.x, this.y);
 				let sawVelocity = createVector(this.xSpeed, this.ySpeed);
 				let line = p5.Vector.sub(sawPosition, bossPosition);

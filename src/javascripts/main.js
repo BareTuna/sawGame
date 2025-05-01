@@ -302,8 +302,9 @@ function surviveDraw() {
 					spawn(v2.x, v2.y, BULLET);
 					ttTimer = 18;
 					bosses[0].health -= 1;
-				}else if(bosses[0].type == DREVILSTAGE){
-					bosses[0]
+				}else if(bosses[0].type == DREVIL){
+					ttTimer = 50;
+					bosses[0].theOldCrissCross();
 				}
 			}
 			// testBoss.attack();
@@ -360,7 +361,7 @@ function surviveDraw() {
 			}
 		}
 		if (!player.hasSaw || enemies[i].type == BULLET) {
-			if (enemies[i].check(saw.x, saw.y)) {
+			if (enemies[i].check(saw.x, saw.y) ) {
 				for (let i = 0; i < heldPowerups.length; i++) {
 					if (heldPowerups[i].type == RICOCHET && saw.hitOne == false && enemies.length >= 1) {
 						saw.hitOne = true;
@@ -605,7 +606,7 @@ function mousePressed() {
 
 }
 function kill(j) {
-	if (enemies[j].type == CHASER || enemies[j].type == STANDER || enemies[j].type == TRACER) {
+	if ((enemies[j].type == CHASER || enemies[j].type == STANDER || enemies[j].type == TRACER) && enemies[j].killable) {
 		score++;
 	}
 	enemies.splice(j, 1);
@@ -666,8 +667,8 @@ function keyPressed() {
 		}
 	}
 	if(keyCode === 70){
-		stage = COLUMNSTAGE-1;
-		score = stageBreaks[COLUMNSTAGE] - 2;
+		stage = DREVILSTAGE-1;
+		score = stageBreaks[DREVILSTAGE] - 2;
 	}
 }
 

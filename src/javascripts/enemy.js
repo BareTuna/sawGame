@@ -73,24 +73,25 @@ class Enemy {
 				this.allPatterns[i][j].y += CEILING;
 			}
 		}
-        this.thisPattern = Math.floor(Math.random() * this.allPatterns.length);
+        this.thisPatternIndex = Math.floor(Math.random() * this.allPatterns.length);
+        this.thisPattern = this.allPatterns[this.thisPatternIndex];
         this.currentPatternSpot = 0;
         if (this.type == BULLET) {
-            this.speed = 3;
+            this.speed = 4;
             this.moveTowardBullet(this.targetX, this.targetY);
         }
         if (this.type == CHASER) {
-            this.speed = 1;
+            this.speed = 1.25;
             this.killable = true;
         }
 
         if (this.type == BULLETBARRIER) {
-            this.speed = 2;
+            this.speed = 3;
             this.moveTowardBullet(this.targetX, this.targetY);
         }
 
         if (this.type == TRACER) {
-            this.speed = 3;
+            this.speed = 4;
             this.killable = true;
             if (this.thisPattern == 0) {
                 this.x = -10;
@@ -163,13 +164,13 @@ class Enemy {
                 dist(
                     this.x,
                     this.y,
-                    this.allPatterns[this.thisPattern][this.currentPatternSpot].x,
-                    this.allPatterns[this.thisPattern][this.currentPatternSpot].y
+                    this.thisPattern[this.currentPatternSpot].x,
+                    this.thisPattern[this.currentPatternSpot].y
                 ) <= 5
             ) {
                 this.currentPatternSpot += this.patternDelta;
                 if (
-                    this.currentPatternSpot > this.allPatterns[this.thisPattern].length - 1 ||
+                    this.currentPatternSpot > this.thisPattern.length - 1 ||
                     this.currentPatternSpot < 0
                 ) {
                     this.patternDelta *= -1;
@@ -177,8 +178,8 @@ class Enemy {
                 }
             }
             this.moveToward(
-                this.allPatterns[this.thisPattern][this.currentPatternSpot].x,
-                this.allPatterns[this.thisPattern][this.currentPatternSpot].y
+                this.thisPattern[this.currentPatternSpot].x,
+                this.thisPattern[this.currentPatternSpot].y
             );
         }
     }
