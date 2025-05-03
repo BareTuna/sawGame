@@ -261,12 +261,12 @@ function surviveDraw() {
 		} else {
 			ttTimer += spawnTime;
 		}
-		let v2 = goToward(RINGWIDTH/2 + LEFTWALL, RINGHEIGHT/2 + CEILING, random(LEFTWALL+20, RIGHTWALL-20), random(LEFTWALL+20, RIGHTWALL-20));
+		let v2 = goToward((RINGWIDTH/2) + LEFTWALL, (RINGHEIGHT/2) + CEILING, random(LEFTWALL+20, RIGHTWALL-20), random(FLOOR+20, CEILING-20));
 		v2.mult(350);
 		v2.x += RINGWIDTH/2 + LEFTWALL;
 		v2.y += RINGHEIGHT/2 + CEILING;
 		while (dist(player.x, player.y, v2.x, v2.y) <= 275) {
-			v2 = goToward(RINGWIDTH/2 + LEFTWALL, RINGHEIGHT/2 + CEILING, random(LEFTWALL+20, RIGHTWALL-20), random(LEFTWALL+20, RIGHTWALL-20));
+			v2 = goToward(RINGWIDTH/2 + LEFTWALL, RINGHEIGHT/2 + CEILING, random(LEFTWALL+20, RIGHTWALL-20), random(FLOOR+20, CEILING-20));
 			v2.mult(250);
 			v2.x += RINGWIDTH/2 + LEFTWALL;
 			v2.y += RINGHEIGHT/2 + CEILING;
@@ -385,7 +385,7 @@ function surviveDraw() {
 						let closestI = 0;
 						for (let i = 0; i < enemies.length; i++) {
 							if (dist(saw.x, saw.y, enemies[i].x, enemies[i].y) < closestDist && enemies[i].killable) {
-								if (enemies[i].x >= LEFTWALL && enemies[i].x <= RIGHTWALL && enemies[i].y >= 0 && enemies[i].y <= RIGHTWALL) {
+								if (enemies[i].x >= LEFTWALL && enemies[i].x <= RIGHTWALL && enemies[i].y >= CEILING && enemies[i].y <= FLOOR) {
 									closestDist = dist(saw.x, saw.y, enemies[i].x, enemies[i].y);
 									closestI = i;
 								}

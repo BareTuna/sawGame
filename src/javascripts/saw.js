@@ -34,7 +34,7 @@ class Saw {
 			hit = true;
 		}
 		if (stage == COLUMNSTAGE) {
-			if (this.y <= (100 * 1.375) + this.w * 1.5) {
+			if (this.y <= (100 * 1.375) + this.w * 1.5 && player.hasSaw == false) {
 				this.ySpeed *= -1;
 				this.y = (100 * 1.375) + this.w * 1.5;
 				hit = true;

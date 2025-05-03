@@ -111,7 +111,7 @@ class Enemy {
         this.sticky = false;
         for (let i = 0; i < heldPowerups.length; i++) {
             if (heldPowerups[i].type == MOLASSES) {
-                this.speed *= 0.8;
+                // this.speed *= 0.8;
             }
         }
     }
@@ -146,7 +146,7 @@ class Enemy {
                     return true;
                 }
                 for(let i = 0; i < heldPowerups.length; i++){
-                    if(heldPowerups[i].type == MOLASSES){
+                    if(heldPowerups[i].type == MOLASSES && stage != DREVILSTAGE){
                         if (!this.sticky && dist(this.x, this.y, x, y) < 20 * 1.375 * 3) {
                             this.speed *= 0.6;
                             this.sticky = true;
