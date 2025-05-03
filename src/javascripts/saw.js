@@ -72,7 +72,7 @@ class Saw {
 				reflection.div(2);
 				// Set the new velocity
 				this.setSpeed(reflection.x, reflection.y);
-				bosses[0].health -= 5;
+				bosses[0].health -= 2;
 			}
 			this.hit = true;
 		}

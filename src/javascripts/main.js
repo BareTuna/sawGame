@@ -259,7 +259,7 @@ function surviveDraw() {
 			ttTimer += spawnTime;
 		}
 		let v2 = goToward(RINGWIDTH/2 + LEFTWALL, RINGHEIGHT/2 + CEILING, random(LEFTWALL+20, RIGHTWALL-20), random(LEFTWALL+20, RIGHTWALL-20));
-		v2.mult(300);
+		v2.mult(350);
 		v2.x += RINGWIDTH/2 + LEFTWALL;
 		v2.y += RINGHEIGHT/2 + CEILING;
 		while (dist(player.x, player.y, v2.x, v2.y) <= 275) {
@@ -306,8 +306,18 @@ function surviveDraw() {
 					ttTimer = 18;
 					bosses[0].health -= 1;
 				}else if(bosses[0].type == DREVIL){
-					ttTimer = 13;
-					bosses[0].radiateAttack();
+					if (bosses[0].health >= 80) {
+						console.log("bash attack");
+						bosses[0].bashSlam();
+						ttTimer = 45;
+					} else if (bosses[0].health < 80 && bosses[0].health >= 40) {
+						console.log("criss attack");
+						bosses[0].theOldCrissCross();
+						ttTimer = 325;
+					} else if (bosses[0].health < 40){
+						bosses[0].radiateAttack();
+						ttTimer = 15;
+					}
 				}
 			}
 			// testBoss.attack();
@@ -401,6 +411,13 @@ function surviveDraw() {
 	//BOSS:
 	if (bosses.length > 0) {
 		bosses[0].show();
+		if(bosses[0].type == DREVIL){
+			for(let i = 0; i < enemies.length; i++){
+				if(dist(enemies[i].x, enemies[i].y, enemies[i].thisPattern[enemies[i].thisPattern.length-1].x, enemies[i].thisPattern[enemies[i].thisPattern.length-1].y) <= 20 && enemies[i].type == TRACER){
+					kill(enemies[i].id);
+				}
+			}
+		}
 	}
 	//PLAYER
 	player.show();
@@ -486,7 +503,7 @@ function surviveDraw() {
 	pop();
 	////////////
 	//When do i show the breathe timer text
-	if (breatheTimer > 0 && enemies.length == 0 && (score >= stageBreaks[stage] || stage == COLUMNSTAGE || stage == BULLETSTAGE || stage == DREVIL)) {
+	if (breatheTimer > 0 && enemies.length == 0 && (score >= stageBreaks[stage] || stage == COLUMNSTAGE || stage == BULLETSTAGE || stage == DREVILSTAGE)) {
 		push();
 		text("BREATHE", RINGWIDTH/2 + LEFTWALL, 200);
 		pop();

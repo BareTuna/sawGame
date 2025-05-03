@@ -9,7 +9,7 @@ class Boss {
             this.health = 130;
         }
         if (this.type == DREVIL) {
-            this.health = 100;
+            this.health = 120;
             this.x = RINGWIDTH/2 + LEFTWALL;
             this.y = 0;
         }
@@ -35,7 +35,7 @@ class Boss {
             fill(255);
             ellipse(this.x,this.y,150,150);
             rectMode(CENTER);
-            rect(this.x,this.y + 85, 100, 10);
+            rect(this.x,this.y + 85, 120, 10);
             fill(255,0,0);
             rect(this.x,this.y + 85, this.health, 10);
             pop();
@@ -123,9 +123,25 @@ class Boss {
 
 
     theOldCrissCross(){
-        spawn(0,0,TRACER,550,550);
+        enemies = [];
+        let amountOfenemies = 7;
+        for(let i = 0; i < amountOfenemies; i++){
+            spawn(0,0,TRACER,550,550);
+        }
         for(let i = 0; i < enemies.length; i++){
-            enemies[i].thisPattern = [createVector(400,400), createVector(2000,2000)];
+            enemies[i].thisPattern = [createVector(RIGHTWALL - 20, (i * 80) + 100), createVector(LEFTWALL - 20,(i * 80) + 100)];
+            enemies[i].x = RIGHTWALL - 20;
+            enemies[i].y = CEILING - 50;
+            enemies[i].killable = false;
+            
+        }
+        for(let i = 0; i < amountOfenemies; i++){
+            spawn(0,0,TRACER,550,550);
+        }
+        for(let i = amountOfenemies; i < enemies.length; i++){
+            enemies[i].thisPattern = [createVector(LEFTWALL + 20, ((i-amountOfenemies) * 80) + 120), createVector(RIGHTWALL + 20,((i-amountOfenemies) * 80) + 120)];
+            enemies[i].x = LEFTWALL + 20;
+            enemies[i].y = CEILING - 50;
             enemies[i].killable = false;
             
         }
@@ -134,7 +150,27 @@ class Boss {
                 kill(enemies[i].id);
             }
         }
+    }
 
-
+    bashSlam(){
+        let amountOfProngs = 24;
+        if(this.toggle){
+            for(let i = 0; i < 360; i += 360/amountOfProngs){
+                let targetX = bosses[0].x + (800 * cos(i + random(0,10)));  
+                let targetY = bosses[0].y + (800 * sin(i + random(0,10)));
+                    
+                spawn(LEFTWALL, CEILING, BULLETBARRIER, targetX, targetY);
+            }
+            this.toggle = false;
+        }else{
+            for(let i = 0; i < 360; i += 360/amountOfProngs){
+                let targetX = bosses[0].x + (800 * cos(i + random(0,10)));  
+                let targetY = bosses[0].y + (800 * sin(i + random(0,10)));
+                    
+                spawn(RIGHTWALL, CEILING, BULLETBARRIER, targetX, targetY);
+            }
+            this.toggle = true;
+        }
+        
     }
 }

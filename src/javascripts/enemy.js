@@ -131,14 +131,17 @@ class Enemy {
     check(x, y) {
         switch (this.type) {
             case BULLET:
-                if (dist(this.x, this.y, LEFTWALL + RINGWIDTH / 2, CEILING + RINGHEIGHT / 2) >= 700) {
+                if (dist(this.x, this.y, LEFTWALL + (RINGWIDTH / 2), CEILING + (RINGHEIGHT / 2)) >= 1000) {
                     kill(this.id);
                 }
                 return false;
             case BULLETBARRIER:
+                if (dist(this.x, this.y, LEFTWALL + (RINGWIDTH / 2), CEILING + (RINGHEIGHT / 2)) >= 700) {
+                    kill(this.id);
+                }
                 return false;
             default:
-                if (dist(this.x, this.y, x, y) < 20 * 1.375) {
+                if (dist(this.x, this.y, x, y) < 20 * 1.375 && this.killable) {
                     kill(this.id);
                     return true;
                 }
@@ -150,6 +153,9 @@ class Enemy {
                         }
                         break;
                     }
+                }
+                if (dist(this.x, this.y, LEFTWALL + (RINGWIDTH / 2), CEILING + (RINGHEIGHT / 2)) >= 700) {
+                    kill(this.id);
                 }
                 return false;
         }

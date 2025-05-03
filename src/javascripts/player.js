@@ -79,6 +79,29 @@ update() {
         this.maxSpeed = this.setMaxSpeed;
     }
 
+    if(stage == DREVILSTAGE && bosses.length > 0){
+        if(dist(this.x,this.y, bosses[0].x, bosses[0].y) <= 75 + this.w/2){
+            let bossPos = createVector(bosses[0].x, bosses[0].y);
+            let playerPos = createVector(this.x, this.y);
+    
+            let dir = p5.Vector.sub(playerPos, bossPos);
+            dir.setMag(76 + this.w/2);
+
+            this.x = bossPos.x + dir.x;
+            this.y = bossPos.y + dir.y;
+            if (this.lifeTimer == 0) {
+                this.lives--;
+                this.lifeTimer = 150;
+                hurtTimer = 170;
+                for (let i = 0; i < heldPowerups.length; i++) {
+                    if (heldPowerups[i].type == BREATHER) {
+                        this.lifeTimer += 75;
+                    }
+                }
+            }
+        }
+    }
+
     
 }
 
