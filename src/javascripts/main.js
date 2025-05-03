@@ -73,7 +73,7 @@ let menuButtons = [new Button(RINGWIDTH/2 + LEFTWALL, 200, 150, 25, "Time trial"
 	
 	blasters = [];
 	stage = 0;
-	player.lives = 3;
+	player.lives = 20;
 	hurtTimer = 0;
 	bosses = [];
 })];
@@ -93,7 +93,7 @@ let surviveOverButtons = [new Button(RINGWIDTH/2 + LEFTWALL, 300, 150, 25, "Try 
 	heldPowerups = [];
 	blasters = [];
 	stage = 0;
-	player.lives = 3;
+	player.lives = 20;
 	hurtTimer = 0;
 	bosses = [];
 }), new Button(RINGWIDTH/2 + LEFTWALL, 335, 100, 25, "Menu", () => scene = MENU)]
@@ -513,31 +513,30 @@ function surviveDraw() {
 	//When do i show powerups?
 	if (letChoose && breatheTimer == 0) {
 		if (fieldUpgrades.length == 0) {
+			// Filter out perks the player already holds
+			let availablePerks = allPerks.filter(perk => {
+				return !heldPowerups.some(held => held.isPerk && held.type === perk);
+			});
+
+			// Add a random power-up as well
 			let randomPowerup = Math.floor(Math.random() * allPowerUps.length);
-			fieldUpgrades.push(new Powerup(RINGWIDTH/2 + LEFTWALL - 75, 200, randomPowerup));
-			let perkCount = 0;
-			for (let i = 0; i < heldPowerups.length; i++) {
-				if (heldPowerups[i].isPerk) {
-					perkCount++;
-				}
-			}
+			fieldUpgrades.push(new Powerup(RINGWIDTH / 2 + LEFTWALL - 75, 200, randomPowerup));
 
-			if (perkCount >= allPerks.length || Math.random() < 0.5) {
-				fieldUpgrades.push(new Powerup(RINGWIDTH/2 + LEFTWALL + 75, 200, Math.floor(Math.random() * 4)));
-			} else {
-				let randomPerk = Math.floor(Math.random() * (allPerks.length + 1)) + allPowerUps.length;
-				for (let i = 0; i < heldPowerups.length; i++) {
-					if (heldPowerups[i].isPerk) {
-						if (heldPowerups[i].type == randomPerk) {
-							randomPerk = Math.floor(Math.random() * (allPerks.length + 1)) + allPowerUps.length;
-							i = 0;
-						}
-					}
+			if(Math.random() > 0.3){
+				// If there are available perks, randomly select one
+				if (availablePerks.length > 0) {
+					let randomPerk = availablePerks[Math.floor(Math.random() * availablePerks.length)];
+					fieldUpgrades.push(new Powerup(RINGWIDTH / 2 + LEFTWALL + 75, 200, randomPerk, true));
+				}else{
+					// If no perks are available, add a random power-up
+					let randomPowerup = Math.floor(Math.random() * allPowerUps.length);
+					fieldUpgrades.push(new Powerup(RINGWIDTH / 2 + LEFTWALL + 75, 200, randomPowerup));
 				}
-				fieldUpgrades.push(new Powerup(RINGWIDTH/2 + LEFTWALL + 75, 200, randomPerk, true));
+			}else{
+				randomPowerup = Math.floor(Math.random() * allPowerUps.length);
+				fieldUpgrades.push(new Powerup(RINGWIDTH / 2 + LEFTWALL + 75, 200, randomPowerup));
 			}
-
-			player.x = RINGWIDTH/2 + LEFTWALL;
+			player.x = RINGWIDTH / 2 + LEFTWALL;
 			player.y = 350;
 			player.xSpeed = 0;
 			player.ySpeed = 0;
