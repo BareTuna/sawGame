@@ -12,8 +12,9 @@ class Player {
     this.y = RINGHEIGHT/2 + CEILING;
     this.ySpeed = 0;
     this.yAcc = 0.7;
-    this.setMaxSpeed = 4.25;
-    this.maxSpeed = 4.25;
+    this.defaultSpeed = 4.25; // Store the original default speed
+    this.setMaxSpeed = this.defaultSpeed; // Used for perks like MATCHALATTE
+    this.maxSpeed = this.defaultSpeed; 
     this.hasSaw = false;
     this.w = 20 * 1.375;
     this.lives = 20;

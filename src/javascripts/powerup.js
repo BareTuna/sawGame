@@ -89,7 +89,8 @@ class Powerup {
             console.log("WRONG");
         }
         if (this.type == MATCHALATTE) {
-            player.setMaxSpeed += 1;
+            player.setMaxSpeed += 0.75; // Increase default speed
+            player.maxSpeed = player.setMaxSpeed; // Update current speed
         }
         if (this.type == RAGE) {
             player.rageTimer += 300;
