@@ -8,12 +8,12 @@ class Player {
     const RINGHEIGHT = 550;
     this.x = RINGWIDTH/2 + LEFTWALL;
     this.xSpeed = 0;
-    this.xAcc = 0.5;
+    this.xAcc = 0.7;
     this.y = RINGHEIGHT/2 + CEILING;
     this.ySpeed = 0;
-    this.yAcc = 0.5;
+    this.yAcc = 0.7;
     this.setMaxSpeed = 4.25;
-    this.maxSpeed = 0;
+    this.maxSpeed = 4.25;
     this.hasSaw = false;
     this.w = 20 * 1.375;
     this.lives = 20;
@@ -57,10 +57,10 @@ update() {
 
     this.move();
 
-    if (Math.abs(this.xSpeed) < 0.3) {
+    if (Math.abs(this.xSpeed) < 0.03) {
         this.xSpeed = 0;
     }
-    if (Math.abs(this.ySpeed) < 0.3) {
+    if (Math.abs(this.ySpeed) < 0.03) {
         this.ySpeed = 0;
     }
 
@@ -135,19 +135,36 @@ move() {
         }
     }
 
-    let friction = 0.2;
-
+    let friction = 0.3;
     if (this.xSpeed > 0) {
-        this.xSpeed -= friction;
-    } else {
-        this.xSpeed += friction;
+        if(this.xSpeed - friction < 0){
+            this.xSpeed = 0;
+        }else{
+            this.xSpeed -= friction;
+        }
+    } else if(this.xSpeed < 0){
+        if(this.xSpeed + friction > 0){
+            this.xSpeed = 0;
+        }else{
+            this.xSpeed += friction;
+        }
+
     }
 
     if (this.ySpeed > 0) {
-        this.ySpeed -= friction;
-    } else {
-        this.ySpeed += friction;
+        if(this.ySpeed - friction < 0){
+            this.ySpeed = 0;
+        }else{
+            this.ySpeed -= friction;
+        }
+    } else if(this.ySpeed < 0){
+        if(this.ySpeed + friction > 0){
+            this.ySpeed = 0;
+        }else{
+            this.ySpeed += friction;
+        }
     }
+
 }
 
 checkDead(x, y, w) {

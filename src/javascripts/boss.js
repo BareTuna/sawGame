@@ -113,7 +113,7 @@ class Boss {
                 }
             }
             if(this.radiateOffset >= this.radiateBreak + 50){
-                this.radiateBreak += 150;
+                this.radiateBreak += 100;
             }
 
             this.radiateOffset += 5;

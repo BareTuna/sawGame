@@ -77,7 +77,7 @@ class Enemy {
         this.thisPattern = this.allPatterns[this.thisPatternIndex];
         this.currentPatternSpot = 0;
         if (this.type == BULLET) {
-            this.speed = 4;
+            this.speed = 3;
             this.moveTowardBullet(this.targetX, this.targetY);
         }
         if (this.type == CHASER) {
@@ -86,12 +86,12 @@ class Enemy {
         }
 
         if (this.type == BULLETBARRIER) {
-            this.speed = 3;
+            this.speed = 2.5;
             this.moveTowardBullet(this.targetX, this.targetY);
         }
 
         if (this.type == TRACER) {
-            this.speed = 4;
+            this.speed = 3;
             this.killable = true;
             if (this.thisPattern == 0) {
                 this.x = -10;

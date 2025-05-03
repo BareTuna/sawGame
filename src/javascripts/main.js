@@ -68,7 +68,9 @@ let menuButtons = [new Button(RINGWIDTH/2 + LEFTWALL, 200, 150, 25, "Time trial"
 	breatheTimer = -1;
 	enemies = [];
 	fieldUpgrades = [];
-	heldPowerups = [new Powerup(0,0,MOLASSES, true)];
+	// heldPowerups = [new Powerup(0,0,MOLASSES, true)];
+	heldPowerups = [];
+	
 	blasters = [];
 	stage = 0;
 	player.lives = 3;
@@ -87,7 +89,8 @@ let surviveOverButtons = [new Button(RINGWIDTH/2 + LEFTWALL, 300, 150, 25, "Try 
 	breatheTimer = -1;
 	enemies = [];
 	fieldUpgrades = [];
-	heldPowerups = [new Powerup(0, 0, MOLASSES, true)];
+	// heldPowerups = [new Powerup(0,0,MOLASSES, true)];
+	heldPowerups = [];
 	blasters = [];
 	stage = 0;
 	player.lives = 3;
@@ -303,8 +306,8 @@ function surviveDraw() {
 					ttTimer = 18;
 					bosses[0].health -= 1;
 				}else if(bosses[0].type == DREVIL){
-					ttTimer = 50;
-					bosses[0].theOldCrissCross();
+					ttTimer = 13;
+					bosses[0].radiateAttack();
 				}
 			}
 			// testBoss.attack();
