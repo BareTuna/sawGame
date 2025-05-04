@@ -76,6 +76,15 @@ class Enemy {
         this.thisPatternIndex = Math.floor(Math.random() * this.allPatterns.length);
         this.thisPattern = this.allPatterns[this.thisPatternIndex];
         this.currentPatternSpot = 0;
+
+		// frog
+		this.jumpTimer = 0;
+		this.jumpCooldown = 100;
+		this.jumpDistance = 80;
+		this.isJumping = false;
+		this.jumpTowardPlayer = true; // alternate random/direct hops
+		this.facingAngle = 0;
+
         if (this.type == BULLET) {
             this.speed = 3;
             this.moveTowardBullet(this.targetX, this.targetY);
@@ -108,6 +117,11 @@ class Enemy {
             }
         }
 
+		if (this.type == FROG) {
+			this.speed = 3;
+			this.killable = true;
+		}
+
         this.sticky = false;
         for (let i = 0; i < heldPowerups.length; i++) {
             if (heldPowerups[i].type == MOLASSES) {
@@ -127,6 +141,24 @@ class Enemy {
             ellipse(this.x, this.y, this.w, this.w);
             pop();
         }
+		if (this.type == FROG) {
+			push();
+			let theta;
+			if (this.isJumping) {
+				theta = atan2(this.targetY - this.y, this.targetX - this.x);
+			} else {
+				theta = atan2(player.y - this.y, player.x - this.x);
+			}
+			push();
+			stroke(230, 100, 100);
+			strokeWeight(5);
+			line(this.x, this.y, this.x + this.w * cos(theta), this.y + this.w * sin(theta));
+			pop();
+			fill(200, 230, 200);
+			equilateral(this.x, this.y, theta, this.w * 0.875);
+
+			pop();
+		}
     }
     check(x, y) {
         switch (this.type) {
@@ -149,6 +181,7 @@ class Enemy {
                     if(heldPowerups[i].type == MOLASSES && stage != DREVILSTAGE){
                         if (!this.sticky && dist(this.x, this.y, x, y) < 20 * 1.375 * 3) {
                             this.speed *= 0.6;
+							this.jumpDistance *= 0.5;
                             this.sticky = true;
                         }
                         break;
@@ -193,6 +226,29 @@ class Enemy {
                 this.thisPattern[this.currentPatternSpot].y
             );
         }
+		if (this.type == FROG) {
+			this.jumpTimer = max(this.jumpTimer - 1, 0);
+			if (this.jumpTimer == 0) {
+				this.jumpTimer = this.jumpCooldown;
+
+				this.jumpTowardPlayer = !this.jumpTowardPlayer;
+				const v2 = goToward(this.x, this.y, x, y);
+				if (!this.jumpTowardPlayer) {
+					v2.rotate(QUARTER_PI * random() > 0.5 ? -1 : 1);
+				}
+				this.targetX = this.x + v2.x * this.jumpDistance;
+				this.targetY = this.y + v2.y * this.jumpDistance;
+			}
+			if (dist(this.x, this.y, this.targetX, this.targetY) >= this.speed) {
+				this.isJumping = true;
+				this.moveToward(
+					this.targetX,
+					this.targetY,
+				);
+			} else {
+				this.isJumping = false;
+			}
+		}
     }
 
     moveToward(x, y) {
