@@ -24,6 +24,7 @@ const BULLET = 1;
 const STANDER = 2;
 const BULLETBARRIER = 3;
 const TRACER = 4;
+const FROG = 5;
 //powerup types
 const RETURNER = 0;
 const FLASH = 1;
@@ -666,7 +667,7 @@ function mousePressed() {
 
 }
 function kill(j) {
-	if ((enemies[j].type == CHASER || enemies[j].type == STANDER || enemies[j].type == TRACER) && enemies[j].killable) {
+	if ((enemies[j].type == CHASER || enemies[j].type == STANDER || enemies[j].type == TRACER || enemies[j].type == FROG) && enemies[j].killable) {
 		score++;
 	}
 	enemies.splice(j, 1);
@@ -691,6 +692,8 @@ function spawn(x, y, type, tx = -1, ty = -1) {
 		enemies.push(new Enemy(x, y, 0, BULLETBARRIER, tx, ty));
 	} else if (type == TRACER) {
 		enemies.push(new Enemy(x, y, 0, TRACER));
+	} else if (type == FROG) {
+		enemies.push(new Enemy(x, y, 0, FROG));
 	} else {
 		enemies.push(new Enemy(x, y, 0, STANDER));
 	}
@@ -739,4 +742,15 @@ function goToward(x1, y1, x2, y2) {
 	v2.normalize();
 	v2.mult(1.25);
 	return v2;
+}
+
+function equilateral(x, y, theta, size) {
+  triangle(
+    x + cos(theta) * size,
+    y + sin(theta) * size,
+    x + cos(theta + TAU/3) * size,
+    y + sin(theta + TAU/3) * size,
+    x + cos(theta - TAU/3) * size,
+    y + sin(theta - TAU/3) * size
+  );
 }
