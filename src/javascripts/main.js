@@ -565,7 +565,7 @@ function surviveDraw() {
 				// If there are available perks, randomly select one
 				if (availablePerks.length > 0) {
 					let randomPerk = availablePerks[Math.floor(Math.random() * availablePerks.length)];
-					randomPerk = allPowerUps.length + 6;
+					//randomPerk = allPowerUps.length + 6;
 					
 					fieldUpgrades.push(new Powerup(RINGWIDTH / 2 + LEFTWALL + 75, 200, randomPerk, true));
 				}else{
