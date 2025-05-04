@@ -12,6 +12,7 @@ class Saw {
 		this.ttl = ttl;
 		this.hitOne = false;
 		this.hitCount = 0;
+		this.defaultSpeed = 13;
 	}
 	update() {
 		let hit = false;
@@ -115,6 +116,22 @@ class Saw {
 			for (let i = 0; i < heldPowerups.length; i++) {
 				if (heldPowerups[i].type == TBOUNCE) {
 					heldPowerups[i].activate();
+				}
+				if (heldPowerups[i].type == LIGHTNING) {
+					let distances = [
+						{ wall: "RIGHT", dist: RIGHTWALL - this.x },
+						{ wall: "LEFT", dist: this.x - LEFTWALL },
+						{ wall: "FLOOR", dist: FLOOR - this.y },
+						{ wall: "CEILING", dist: this.y - CEILING }
+					];
+					let closest = distances.reduce((a, b) => (a.dist < b.dist ? a : b));
+					if (closest.wall == "RIGHT") this.x = RIGHTWALL - this.w / 2;
+					if (closest.wall == "LEFT") this.x = LEFTWALL + this.w / 2;
+					if (closest.wall == "FLOOR") this.y = FLOOR - this.w / 2;
+					if (closest.wall == "CEILING") this.y = CEILING + this.w / 2;
+					
+					this.xSpeed = 0;
+					this.ySpeed = 0;
 				}
 			}
 			this.hitCount++;

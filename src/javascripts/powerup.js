@@ -39,6 +39,9 @@ class Powerup {
         if (this.type == TBOUNCE) {
             this.description = "On the partner's fourth bounce they will let out a phsycic blast";
         }
+        if(this.type == LIGHTNING){
+            this.description = "Will make partner lightning fast, but will stick to walls on 4th bounce.";
+        }
     }
 
     activate() {
@@ -91,6 +94,9 @@ class Powerup {
         if (this.type == MATCHALATTE) {
             player.setMaxSpeed += 0.75; // Increase default speed
             player.maxSpeed = player.setMaxSpeed; // Update current speed
+        }
+        if (this.type == LIGHTNING) {
+            saw.defaultSpeed = 50;
         }
         if (this.type == RAGE) {
             player.rageTimer += 300;

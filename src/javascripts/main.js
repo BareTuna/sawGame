@@ -38,6 +38,7 @@ const MATCHALATTE = allPowerUps.length + 2;
 const RICOCHET = allPowerUps.length + 3;
 const BREATHER = allPowerUps.length + 4;
 const TBOUNCE = allPowerUps.length + 5;
+const LIGHTNING = allPowerUps.length + 6;
 
 
 const allPerks = [PRICKLY, MOLASSES, MATCHALATTE, BREATHER, TBOUNCE];
@@ -401,7 +402,7 @@ function surviveDraw() {
 							let target = createVector(enemies[closestI].x, enemies[closestI].y);
 							target.sub(createVector(saw.x, saw.y));
 							target.normalize();
-							saw.setSpeed(target.x * 13, target.y * 13);
+							saw.setSpeed(target.x * saw.defaultSpeed, target.y * saw.defaultSpeed);
 						}
 					}
 				}
@@ -446,7 +447,7 @@ function surviveDraw() {
 		fieldUpgrades[i].show(fieldUpgrades[i].x, fieldUpgrades[i].y);
 		fieldUpgrades[i].showDescription();
 		if (fieldUpgrades[i].check(player.x, player.y, player.w)) {
-			if (fieldUpgrades[i].type == MATCHALATTE) {
+			if (fieldUpgrades[i].type == MATCHALATTE || fieldUpgrades[i].type == LIGHTNING) {	
 				fieldUpgrades[i].activate();
 			}
 			heldPowerups.push(fieldUpgrades[i]);
@@ -542,6 +543,8 @@ function surviveDraw() {
 				// If there are available perks, randomly select one
 				if (availablePerks.length > 0) {
 					let randomPerk = availablePerks[Math.floor(Math.random() * availablePerks.length)];
+					randomPerk = allPowerUps.length + 6;
+					
 					fieldUpgrades.push(new Powerup(RINGWIDTH / 2 + LEFTWALL + 75, 200, randomPerk, true));
 				}else{
 					// If no perks are available, add a random power-up
@@ -617,7 +620,7 @@ function mousePressed() {
 		mouse = createVector(mouseX, mouseY);
 		mouse.sub(createVector(player.x, player.y));
 		mouse.normalize();
-		saw.setSpeed(mouse.x * 13, mouse.y * 13);
+		saw.setSpeed(mouse.x * saw.defaultSpeed, mouse.y * saw.defaultSpeed);
 		saw.x += mouse.x * 22;
 		saw.y += mouse.y * 22;
 	}
