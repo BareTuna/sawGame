@@ -261,16 +261,22 @@ function surviveDraw() {
 		} else {
 			ttTimer += spawnTime;
 		}
-		let v2 = goToward((RINGWIDTH/2) + LEFTWALL, (RINGHEIGHT/2) + CEILING, random(LEFTWALL+20, RIGHTWALL-20), random(FLOOR+20, CEILING-20));
-		v2.mult(350);
-		v2.x += RINGWIDTH/2 + LEFTWALL;
-		v2.y += RINGHEIGHT/2 + CEILING;
-		while (dist(player.x, player.y, v2.x, v2.y) <= 275) {
-			v2 = goToward(RINGWIDTH/2 + LEFTWALL, RINGHEIGHT/2 + CEILING, random(LEFTWALL+20, RIGHTWALL-20), random(FLOOR+20, CEILING-20));
-			v2.mult(250);
-			v2.x += RINGWIDTH/2 + LEFTWALL;
-			v2.y += RINGHEIGHT/2 + CEILING;
+		const spawnRadius = 410; // Adjust as needed
+		angleMode(RADIANS);
+		// Random angle for spawn position
+		let angle = random(0, TWO_PI);
+
+		// Calculate spawn position outside the ring
+		let spawnX = ((RINGWIDTH / 2) + LEFTWALL) + cos(angle) * spawnRadius;
+		let spawnY = ((RINGHEIGHT / 2) + CEILING) + sin(angle) * spawnRadius;
+
+		// Ensure enemies don’t spawn too close to the player
+		while (dist(player.x, player.y, spawnX, spawnY) <= 275) {
+			angle = random(0, TWO_PI);
+			spawnX = ((RINGWIDTH / 2) + LEFTWALL) + cos(angle) * spawnRadius;
+			spawnY = ((RINGHEIGHT / 2) + CEILING) + sin(angle) * spawnRadius;
 		}
+
 		let potentialPointCount = 0;
 		for(let i = 0; i < enemies.length; i++){
 			if(enemies[i].killable){
@@ -280,16 +286,16 @@ function surviveDraw() {
 		if (breatheTimer <= 0 && letChoose == false && (potentialPointCount + score < stageBreaks[stage] || stage == COLUMNSTAGE || stage == BULLETSTAGE || stage == DREVILSTAGE)) {
 			if (bosses.length <= 0) {
 				if (Math.random() > 0.5 && score >= stageBreaks[0]) {
-					spawn(v2.x, v2.y, BULLET);
+					spawn(spawnX, spawnY, BULLET);
 				} else {
 					if (stage > COLUMNSTAGE) {
 						if (Math.random() > 0.5) { 
-							spawn(v2.x, v2.y, TRACER);
+							spawn(spawnX, spawnY, TRACER);
 						} else {
-							spawn(v2.x, v2.y, CHASER);
+							spawn(spawnX, spawnY, CHASER);
 						}
 					} else {
-						spawn(v2.x, v2.y, CHASER);
+						spawn(spawnX, spawnY, CHASER);
 					}
 				}
 			} else {
@@ -305,7 +311,7 @@ function surviveDraw() {
 						ttTimer = 50;
 					}
 				}else if(bosses[0].type == BULLETSTORM){
-					spawn(v2.x, v2.y, BULLET);
+					spawn(spawnX, spawnY, BULLET);
 					ttTimer = 18;
 					bosses[0].health -= 1;
 				}else if(bosses[0].type == DREVIL){
