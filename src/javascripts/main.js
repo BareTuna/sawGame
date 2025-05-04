@@ -39,6 +39,9 @@ const RICOCHET = allPowerUps.length + 3;
 const BREATHER = allPowerUps.length + 4;
 const TBOUNCE = allPowerUps.length + 5;
 
+let stageBreaks = [10, 25, 40, 55, 56, 70, 85, 100, 115, 116, 130, 145, 160, 175, 176, 190, 205, 220];
+// let stageBreaks = [0, 3, 40, 55, COLUMNSTAGE, 70, 85, 90, 105, 120, 135, 150, 165, 180];
+// let stageBreaks = [0, BULLETSTAGE, 25, 40, 55, 70, 85, 90, 105, COLUMNSTAGE, 120, 135, 150, 165, 180];
 
 const allPerks = [PRICKLY, MOLASSES, MATCHALATTE, BREATHER, TBOUNCE];
 //boss types
@@ -78,7 +81,34 @@ let menuButtons = [new Button(RINGWIDTH/2 + LEFTWALL, 200, 150, 25, "Time trial"
 	bosses = [];
 })];
 let ttOverButtons = [new Button(RINGWIDTH/2 + LEFTWALL, 300, 150, 25, "Try Again? (space)", () => scene = TIMETRIAL), new Button(200, 335, 100, 25, "Menu", () => scene = MENU)];
-let levelButtons = [new Button(RINGWIDTH/2 + LEFTWALL, 300, 150, 25, "Menu", () => scene = MENU)];
+let levelButtons = [new Button(RINGWIDTH/2 + LEFTWALL, FLOOR-50, 150, 25, "Menu", () => scene = MENU)];
+[0].concat(stageBreaks).forEach((stageScore, index) => {
+	const columns = 5;
+	const row = Math.floor(index / columns);
+	const column = index % columns;
+
+	levelButtons.push(new Button(LEFTWALL + column*90+100, CEILING + row*100+50, 80, 80, `Stage ${index + 1}`, () => {
+		scene = SURVIVE
+		score = stageScore;
+		player.hasSaw = true;
+		player.x = RINGWIDTH/2 + LEFTWALL;
+		player.y = FLOOR - RINGHEIGHT/2;
+		spawnTime = 50;
+		breatheTimer = -1;
+		enemies = [];
+		fieldUpgrades = [];
+		// heldPowerups = [new Powerup(0,0,MOLASSES, true)];
+		heldPowerups = [];
+		blasters = [];
+		stage = max(index-1, 0);
+		player.lives = 5;
+		hurtTimer = 0;
+		bosses = [];
+		// Reset to default speed
+		player.setMaxSpeed = player.defaultSpeed;
+		player.maxSpeed = player.defaultSpeed;
+	}))
+});
 let surviveOverButtons = [new Button(RINGWIDTH/2 + LEFTWALL, 300, 150, 25, "Try Again? (space)", () => {
 	scene = SURVIVE
 	score = 0;
@@ -106,9 +136,6 @@ const DREVILSTAGE = 14;
 let ttTimer = 0;
 let spawnTime = 50;
 let breatheTimer = 0;
-let stageBreaks = [10, 25, 40, 55, 56, 70, 85, 100, 115, 116, 130, 145, 160, 175, 176, 190, 205, 220];
-// let stageBreaks = [0, 3, 40, 55, COLUMNSTAGE, 70, 85, 90, 105, 120, 135, 150, 165, 180];
-// let stageBreaks = [0, BULLETSTAGE, 25, 40, 55, 70, 85, 90, 105, COLUMNSTAGE, 120, 135, 150, 165, 180];
 
 let stage = 5;
 let heldPowerups = [new Powerup(200, 200, BLASTER)];
@@ -169,11 +196,6 @@ function ttOverDraw() {
 }
 
 function levelsDraw() {
-	for (let i = 0; i < 5; i++) {
-		for (let j = 0; j < 4; j++) {
-			rect(i * 70 + 25, j * 80 + 25, 60, 60);
-		}
-	}
 	for (let i = 0; i < levelButtons.length; i++) {
 		levelButtons[i].show();
 	}
