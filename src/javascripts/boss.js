@@ -1,4 +1,6 @@
-class Boss {
+import { bosses, BULLETBARRIER, BULLETSTORM, CEILING, clearEnemies, COLUMNLORD, DREVIL, enemies, kill, LEFTWALL, RIGHTWALL, RINGHEIGHT, RINGWIDTH, spawn, TRACER } from "./main";
+
+export class Boss {
     constructor(type) {
         this.type = type;
         this.toggle = false;
@@ -123,7 +125,7 @@ class Boss {
 
 
     theOldCrissCross(){
-        enemies = [];
+        clearEnemies();
         let amountOfenemies = 7;
         for(let i = 0; i < amountOfenemies; i++){
             spawn(0,0,TRACER,550,550);
