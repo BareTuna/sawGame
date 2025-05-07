@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/p5.js"></script> -->
+	<style>
+		* {
+			margin: 0px;
+			padding: 0px;
+			box-sizing: border-box;
+		}
+
+		body {
+			background-color: #505050;
+		}
+
+		main {
+			width: 100vw;
+			height: 100vh;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+		}
+	</style>
+</head>
+
+<body>
+	<!-- Entry point-->
+	<script type="module" src="/src/javascripts/main.js"></script>
+
+	<!-- Glue the functions from main.js to p5 functions -->
+	<script type="module">
+		import { preload, setup, draw, keyPressed, mousePressed } from '/src/javascripts/main';
+		window.preload = preload;
+		window.setup = setup;
+		window.draw = draw;
+		window.keyPressed = keyPressed;
+		window.mousePressed = mousePressed;
+	</script>
+</body>
+
+</html>

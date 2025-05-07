@@ -1,11 +1,14 @@
-class Player {
+import p5 from "p5";
+import { bosses, BREATHER, COLUMNSTAGE, DREVILSTAGE, heldPowerups, setHurtTimer, stage } from "./main";
+
+const LEFTWALL = 225;
+const RIGHTWALL = 775;
+const CEILING = 25;
+const FLOOR = 575;
+const RINGWIDTH = 550;
+const RINGHEIGHT = 550;
+export class Player {
     constructor() {
-    const LEFTWALL = 225;
-    const RIGHTWALL = 775;
-    const CEILING = 25;
-    const FLOOR = 575;
-    const RINGWIDTH = 550;
-    const RINGHEIGHT = 550;
     this.x = RINGWIDTH/2 + LEFTWALL;
     this.xSpeed = 0;
     this.xAcc = 0.7;
@@ -93,7 +96,7 @@ update() {
             if (this.lifeTimer == 0) {
                 this.lives--;
                 this.lifeTimer = 150;
-                hurtTimer = 170;
+                setHurtTimer(170);
                 for (let i = 0; i < heldPowerups.length; i++) {
                     if (heldPowerups[i].type == BREATHER) {
                         this.lifeTimer += 75;

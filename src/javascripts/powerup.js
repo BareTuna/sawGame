@@ -1,4 +1,7 @@
-class Powerup {
+import { BLASTER, blasters, BREATHER, enemies, FLASH, goToward, kill, LIGHTNING, MATCHALATTE, MOLASSES, ONEUP, player, PRICKLY, RAGE, RETURNER, RICOCHET, saw, score, setScore, TBOUNCE } from "./main";
+import { Saw } from "./saw";
+
+export class Powerup {
     constructor(x, y, type, isPerk = false) {
         this.x = x;
         this.y = y;
@@ -53,7 +56,7 @@ class Powerup {
                 if (dist(player.x, player.y, enemies[i].x, enemies[i].y) <= 250 / 2) {
                     kill(i);
                     if (enemies[i].killable) {
-                        score++;
+                        setScore(score + 1);
                     }
                     i = -1;
                 }

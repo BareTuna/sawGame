@@ -1,45 +1,58 @@
-let player = new Player();
-let saw = new Saw(200, 200);
-let enemies = [];
-let score = 0;
+import { Boss } from "./boss";
+import { Button } from "./button";
+import { Enemy } from "./enemy";
+import { Player } from "./player";
+import { Powerup } from "./powerup";
+import { Saw } from "./saw";
+
+export let player = new Player();
+export let saw = new Saw(200, 200);
+export let enemies = [];
+export function clearEnemies() {
+	enemies = [];
+}
+export let score = 0;
+export function setScore(value) {
+	score = value;
+}
 let enemyIdle;
 //barriers
-const LEFTWALL = 225;
-const RIGHTWALL = 775;
-const CEILING = 25;
-const FLOOR = 575;
-const RINGWIDTH = 550;
-const RINGHEIGHT = 550;
+export const LEFTWALL = 225;
+export const RIGHTWALL = 775;
+export const CEILING = 25;
+export const FLOOR = 575;
+export const RINGWIDTH = 550;
+export const RINGHEIGHT = 550;
 // scenes
-const MENU = 1;
-const TIMETRIAL = 2;
-const TTOVER = 3;
-const LEVELS = 4;
-const SURVIVE = 5;
-const SURVIVEOVER = 6;
-const PAUSE = 7;
+export const MENU = 1;
+export const TIMETRIAL = 2;
+export const TTOVER = 3;
+export const LEVELS = 4;
+export const SURVIVE = 5;
+export const SURVIVEOVER = 6;
+export const PAUSE = 7;
 //enemy types
-const CHASER = 0;
-const BULLET = 1;
-const STANDER = 2;
-const BULLETBARRIER = 3;
-const TRACER = 4;
-const FROG = 5;
+export const CHASER = 0;
+export const BULLET = 1;
+export const STANDER = 2;
+export const BULLETBARRIER = 3;
+export const TRACER = 4;
+export const FROG = 5;
 //powerup types
-const RETURNER = 0;
-const FLASH = 1;
-const BLASTER = 2;
-const ONEUP = 3;
-const RAGE = 4;
-const allPowerUps = [RETURNER, FLASH, BLASTER, ONEUP, RAGE];
+export const RETURNER = 0;
+export const FLASH = 1;
+export const BLASTER = 2;
+export const ONEUP = 3;
+export const RAGE = 4;
+export const allPowerUps = [RETURNER, FLASH, BLASTER, ONEUP, RAGE];
 //perk types
-const PRICKLY = allPowerUps.length;
-const MOLASSES = allPowerUps.length + 1;
-const MATCHALATTE = allPowerUps.length + 2;
-const RICOCHET = allPowerUps.length + 3;
-const BREATHER = allPowerUps.length + 4;
-const TBOUNCE = allPowerUps.length + 5;
-const LIGHTNING = allPowerUps.length + 6;
+export const PRICKLY = allPowerUps.length;
+export const MOLASSES = allPowerUps.length + 1;
+export const MATCHALATTE = allPowerUps.length + 2;
+export const RICOCHET = allPowerUps.length + 3;
+export const BREATHER = allPowerUps.length + 4;
+export const TBOUNCE = allPowerUps.length + 5;
+export const LIGHTNING = allPowerUps.length + 6;
 
 let stageBreaks = [10, 25, 40, 55, 56, 70, 85, 100, 115, 116, 130, 145, 160, 175, 176, 190, 205, 220];
 // let stageBreaks = [0, 3, 40, 55, COLUMNSTAGE, 70, 85, 90, 105, 120, 135, 150, 165, 180];
@@ -47,10 +60,10 @@ let stageBreaks = [10, 25, 40, 55, 56, 70, 85, 100, 115, 116, 130, 145, 160, 175
 
 const allPerks = [PRICKLY, MOLASSES, MATCHALATTE, BREATHER, TBOUNCE];
 //boss types
-const COLUMNLORD = 0;
-const BULLETSTORM = 1;
-const DREVIL = 2;
-let scene = MENU;
+export const COLUMNLORD = 0;
+export const BULLETSTORM = 1;
+export const DREVIL = 2;
+export let scene = MENU;
 let letChoose = false;
 let menuButtons = [new Button(RINGWIDTH/2 + LEFTWALL, 200, 150, 25, "Time trial", () => {
 	scene = TIMETRIAL;
@@ -132,29 +145,31 @@ let surviveOverButtons = [new Button(RINGWIDTH/2 + LEFTWALL, 300, 150, 25, "Try 
 	player.setMaxSpeed = player.defaultSpeed;
 	player.maxSpeed = player.defaultSpeed;
 }), new Button(RINGWIDTH/2 + LEFTWALL, 335, 100, 25, "Menu", () => scene = MENU)]
-const COLUMNSTAGE = 4;
-const BULLETSTAGE = 9;
-const DREVILSTAGE = 14;
+export const COLUMNSTAGE = 4;
+export const BULLETSTAGE = 9;
+export const DREVILSTAGE = 14;
 let ttTimer = 0;
 let spawnTime = 50;
 let breatheTimer = 0;
 
-let stage = 5;
-let heldPowerups = [new Powerup(200, 200, BLASTER)];
+export let stage = 5;
+export let heldPowerups = [new Powerup(200, 200, BLASTER)];
 let fieldUpgrades = [];
 let powerUpTimer;
-let blasters = [];
+export let blasters = [];
 let hurtTimer = 0;
-let bosses = [];
+export function setHurtTimer(value) {
+	hurtTimer = value;
+}
+export let bosses = [];
 
 // let testBoss = new Boss(COLUMNLORD);
-function preload() {
-	img = loadImage('/images/whestler.png');
+export function preload() {
+	// let img = loadImage('/images/whestler.png');
 }
 
-function setup() {
+export function setup() {
 	const myCanvas = createCanvas(1000, 600);
-	myCanvas.parent('canvasDiv');
 	powerUpTimer = random(300, 500);
 	noSmooth();
 	// 	for(let i = 0; i < 3; i ++){
@@ -162,7 +177,7 @@ function setup() {
 	// 	}
 }
 
-function draw() {
+export function draw() {
 	background(0);
 	rect(225,25,550,550);
 	if (scene == MENU) {
@@ -637,10 +652,10 @@ function pauseDraw(){
 	text("PAUSED", 200, 200);
 }
 
-function mousePressed() {
+export function mousePressed() {
 	if (player.hasSaw && (scene == TIMETRIAL || scene == SURVIVE)) {
 		player.hasSaw = false;
-		mouse = createVector(mouseX, mouseY);
+		let mouse = createVector(mouseX, mouseY);
 		mouse.sub(createVector(player.x, player.y));
 		mouse.normalize();
 		saw.setSpeed(mouse.x * saw.defaultSpeed, mouse.y * saw.defaultSpeed);
@@ -666,7 +681,8 @@ function mousePressed() {
 	}
 
 }
-function kill(j) {
+
+export function kill(j) {
 	if ((enemies[j].type == CHASER || enemies[j].type == STANDER || enemies[j].type == TRACER || enemies[j].type == FROG) && enemies[j].killable) {
 		score++;
 	}
@@ -679,7 +695,7 @@ function kill(j) {
 	}
 }
 
-function spawn(x, y, type, tx = -1, ty = -1) {
+export function spawn(x, y, type, tx = -1, ty = -1) {
 	if (type == CHASER) {
 		enemies.push(new Enemy(x, y, 0, CHASER));
 	} else if (type == BULLET) {
@@ -703,7 +719,7 @@ function spawn(x, y, type, tx = -1, ty = -1) {
 }
 
 
-function keyPressed() {
+export function keyPressed() {
 	if (keyCode === 32) { //space
 		if (scene == TTOVER) {
 			scene = TIMETRIAL;
@@ -735,7 +751,7 @@ function keyPressed() {
 	}
 }
 
-function goToward(x1, y1, x2, y2) {
+export function goToward(x1, y1, x2, y2) {
 	let v1 = createVector(x1, y1);
 	let v2 = createVector(x2, y2);
 	v2.sub(v1);
@@ -744,7 +760,7 @@ function goToward(x1, y1, x2, y2) {
 	return v2;
 }
 
-function equilateral(x, y, theta, size) {
+export function equilateral(x, y, theta, size) {
   triangle(
     x + cos(theta) * size,
     y + sin(theta) * size,

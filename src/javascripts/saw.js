@@ -1,4 +1,7 @@
-class Saw {
+import p5 from "p5";
+import { bosses, CEILING, COLUMNLORD, COLUMNSTAGE, DREVILSTAGE, FLOOR, goToward, heldPowerups, LEFTWALL, LIGHTNING, MOLASSES, player, RIGHTWALL, stage, TBOUNCE } from "./main";
+
+export class Saw {
 	constructor(x, y, isBlaster = false, ttl = -1) {
 		this.x = x;
 		this.y = y;
@@ -69,6 +72,7 @@ class Saw {
 
 				// Reflect the velocity over the normal vector
 				let dot = sawVelocity.dot(normalVector);
+				// @ts-ignore: p5.Vector.mult DOES return a vector, at least in p5@1.11.1
 				let reflection = p5.Vector.sub(sawVelocity, p5.Vector.mult(normalVector, 2 * dot));
 				reflection.div(2);
 				// Set the new velocity

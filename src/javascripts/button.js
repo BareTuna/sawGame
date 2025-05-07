@@ -1,4 +1,4 @@
-class Button {
+export class Button {
     constructor(x, y, w, h, t, f) {
         this.x = x;
         this.y = y;

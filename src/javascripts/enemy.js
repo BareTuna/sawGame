@@ -1,4 +1,6 @@
-class Enemy {
+import { BULLET, BULLETBARRIER, CEILING, CHASER, DREVILSTAGE, equilateral, FROG, goToward, heldPowerups, kill, LEFTWALL, MOLASSES, player, RINGHEIGHT, RINGWIDTH, scene, stage, STANDER, SURVIVE, TRACER } from "./main";
+
+export class Enemy {
     constructor(x, y, i, type, targetX = -1, targetY = -1) {
         this.x = x;
         this.y = y;
