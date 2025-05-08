@@ -104,13 +104,13 @@ export class Enemy {
         if (this.type == TRACER) {
             this.speed = 3;
             this.killable = true;
-            if (this.thisPattern == 0) {
+            if (this.thisPatternIndex == 0) {
                 this.x = -10;
                 this.y = -10;
-            } else if (this.thisPattern == 1) {
+            } else if (this.thisPatternIndex == 1) {
                 this.x = -10;
                 this.y = 410;
-            } else if (this.thisPattern == 2) {
+            } else if (this.thisPatternIndex == 3) {
                 this.x = -10;
                 this.y = -10;
             } else {
@@ -195,6 +195,11 @@ export class Enemy {
                 return false;
         }
     }
+    /**
+     * 
+     * @param {number} x - x coordinate of player
+     * @param {number} y - y coordinate of player
+     */
     update(x, y) {
         if (this.type == CHASER) {
             this.moveToward(x, y);

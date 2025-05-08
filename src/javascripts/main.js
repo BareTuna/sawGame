@@ -1,9 +1,14 @@
+
 import { Boss } from "./boss";
 import { Button } from "./button";
 import { Enemy } from "./enemy";
 import { Player } from "./player";
 import { Powerup } from "./powerup";
 import { Saw } from "./saw";
+
+// Initialize the CrazyGames SDK
+
+
 
 export let player = new Player();
 export let saw = new Saw(200, 200);
@@ -54,7 +59,7 @@ export const BREATHER = allPowerUps.length + 4;
 export const TBOUNCE = allPowerUps.length + 5;
 export const LIGHTNING = allPowerUps.length + 6;
 
-let stageBreaks = [10, 25, 40, 55, 56, 70, 85, 100, 115, 116, 130, 145, 160, 175, 176, 190, 205, 220];
+let stageBreaks = [10, 25, 40, 55, 56, 70, 85, 100, 115, 116, 130, 145, 160, 175, 176, 190, 205, 220, 235, 236, 250, 265, 280, 295, 310, 325, 340, 355, 370, 385, 400];
 // let stageBreaks = [0, 3, 40, 55, COLUMNSTAGE, 70, 85, 90, 105, 120, 135, 150, 165, 180];
 // let stageBreaks = [0, BULLETSTAGE, 25, 40, 55, 70, 85, 90, 105, COLUMNSTAGE, 120, 135, 150, 165, 180];
 
@@ -63,51 +68,52 @@ const allPerks = [PRICKLY, MOLASSES, MATCHALATTE, BREATHER, TBOUNCE];
 export const COLUMNLORD = 0;
 export const BULLETSTORM = 1;
 export const DREVIL = 2;
+export const TWIN = 3;
 export let scene = MENU;
 let letChoose = false;
-let menuButtons = [new Button(RINGWIDTH/2 + LEFTWALL, 200, 150, 25, "Time trial", () => {
+let menuButtons = [new Button(RINGWIDTH / 2 + LEFTWALL, 200, 150, 25, "Time trial", () => {
 	scene = TIMETRIAL;
 	ttTimer = 0;
 	score = 0;
 	player.hasSaw = true;
-	player.x = RINGWIDTH/2 + LEFTWALL;
-	player.y = RINGWIDTH/2 + LEFTWALL;
+	player.x = RINGWIDTH / 2 + LEFTWALL;
+	player.y = RINGWIDTH / 2 + LEFTWALL;
 	for (let i = 0; i < 3; i++) {
 		enemies.push(new Enemy(random(20, 380), random(20, 380), i, CHASER));
 	}
-}), new Button(RINGWIDTH/2 + LEFTWALL, 230, 150, 25, "Levels", () => scene = LEVELS), new Button(RINGWIDTH/2 + LEFTWALL, 260, 150, 25, "Survival", () => {
+}), new Button(RINGWIDTH / 2 + LEFTWALL, 230, 150, 25, "Levels", () => scene = LEVELS), new Button(RINGWIDTH / 2 + LEFTWALL, 260, 150, 25, "Survival", () => {
 	scene = SURVIVE
 	scene = SURVIVE
 	score = 0;
 	player.hasSaw = true;
-	player.x = RINGWIDTH/2 + LEFTWALL;
-	player.y = FLOOR - RINGHEIGHT/2;
+	player.x = RINGWIDTH / 2 + LEFTWALL;
+	player.y = FLOOR - RINGHEIGHT / 2;
 	spawnTime = 50;
 	breatheTimer = -1;
 	enemies = [];
 	fieldUpgrades = [];
 	// heldPowerups = [new Powerup(0,0,MOLASSES, true)];
 	heldPowerups = [];
-	
+
 	blasters = [];
 	stage = 0;
 	player.lives = 5;
 	hurtTimer = 0;
 	bosses = [];
 })];
-let ttOverButtons = [new Button(RINGWIDTH/2 + LEFTWALL, 300, 150, 25, "Try Again? (space)", () => scene = TIMETRIAL), new Button(200, 335, 100, 25, "Menu", () => scene = MENU)];
-let levelButtons = [new Button(RINGWIDTH/2 + LEFTWALL, FLOOR-50, 150, 25, "Menu", () => scene = MENU)];
+let ttOverButtons = [new Button(RINGWIDTH / 2 + LEFTWALL, 300, 150, 25, "Try Again? (space)", () => scene = TIMETRIAL), new Button(200, 335, 100, 25, "Menu", () => scene = MENU)];
+let levelButtons = [new Button(RINGWIDTH / 2 + LEFTWALL, FLOOR - 50, 150, 25, "Menu", () => scene = MENU)];
 [0].concat(stageBreaks).forEach((stageScore, index) => {
 	const columns = 5;
 	const row = Math.floor(index / columns);
 	const column = index % columns;
 
-	levelButtons.push(new Button(LEFTWALL + column*90+100, CEILING + row*100+50, 80, 80, `Stage ${index + 1}`, () => {
+	levelButtons.push(new Button(LEFTWALL + column * 90 + 100, CEILING + row * 100 + 50, 80, 80, `Stage ${index + 1}`, () => {
 		scene = SURVIVE
 		score = stageScore;
 		player.hasSaw = true;
-		player.x = RINGWIDTH/2 + LEFTWALL;
-		player.y = FLOOR - RINGHEIGHT/2;
+		player.x = RINGWIDTH / 2 + LEFTWALL;
+		player.y = FLOOR - RINGHEIGHT / 2;
 		spawnTime = 50;
 		breatheTimer = -1;
 		enemies = [];
@@ -115,7 +121,7 @@ let levelButtons = [new Button(RINGWIDTH/2 + LEFTWALL, FLOOR-50, 150, 25, "Menu"
 		// heldPowerups = [new Powerup(0,0,MOLASSES, true)];
 		heldPowerups = [];
 		blasters = [];
-		stage = max(index-1, 0);
+		stage = max(index - 1, 0);
 		player.lives = 5;
 		hurtTimer = 0;
 		bosses = [];
@@ -124,12 +130,12 @@ let levelButtons = [new Button(RINGWIDTH/2 + LEFTWALL, FLOOR-50, 150, 25, "Menu"
 		player.maxSpeed = player.defaultSpeed;
 	}))
 });
-let surviveOverButtons = [new Button(RINGWIDTH/2 + LEFTWALL, 300, 150, 25, "Try Again? (space)", () => {
+let surviveOverButtons = [new Button(RINGWIDTH / 2 + LEFTWALL, 300, 150, 25, "Try Again? (space)", () => {
 	scene = SURVIVE
 	score = 0;
 	player.hasSaw = true;
-	player.x = RINGWIDTH/2 + LEFTWALL;
-	player.y = FLOOR - RINGHEIGHT/2;
+	player.x = RINGWIDTH / 2 + LEFTWALL;
+	player.y = FLOOR - RINGHEIGHT / 2;
 	spawnTime = 50;
 	breatheTimer = -1;
 	enemies = [];
@@ -144,10 +150,11 @@ let surviveOverButtons = [new Button(RINGWIDTH/2 + LEFTWALL, 300, 150, 25, "Try 
 	// Reset to default speed
 	player.setMaxSpeed = player.defaultSpeed;
 	player.maxSpeed = player.defaultSpeed;
-}), new Button(RINGWIDTH/2 + LEFTWALL, 335, 100, 25, "Menu", () => scene = MENU)]
+}), new Button(RINGWIDTH / 2 + LEFTWALL, 335, 100, 25, "Menu", () => scene = MENU)]
 export const COLUMNSTAGE = 4;
 export const BULLETSTAGE = 9;
 export const DREVILSTAGE = 14;
+export const TWINSTAGE = 19;
 let ttTimer = 0;
 let spawnTime = 50;
 let breatheTimer = 0;
@@ -162,24 +169,55 @@ export function setHurtTimer(value) {
 	hurtTimer = value;
 }
 export let bosses = [];
-
+export let img;
+export let gleeby;
 // let testBoss = new Boss(COLUMNLORD);
 export function preload() {
-	// let img = loadImage('/images/whestler.png');
+	img = loadImage('src/images/cowboyTest.png');
+	gleeby = loadImage('src/images/AlienGuy.png');
 }
 
-export function setup() {
+export async function setup() {
 	const myCanvas = createCanvas(1000, 600);
 	powerUpTimer = random(300, 500);
+	// await window.CrazyGames.SDK.init();
 	noSmooth();
 	// 	for(let i = 0; i < 3; i ++){
 	// 		enemies.push(new Enemy(random(20,380), random(20,380),i));
 	// 	}
+	// await example
+	// try {
+	// 	const user = await window.CrazyGames.SDK.user.getUser();
+	// 	console.log(user);
+	// } catch (e) {
+	// 	console.log("Get user error: ", e);
+	// }
+
+	
+
+	// const callbacks = {
+	// 	adFinished: () => console.log("End midgame ad"),
+	// 	adError: (error) => console.log("Error midgame ad", error),
+	// 	adStarted: () => console.log("Start midgame ad"),
+	// };
+	// try {
+	// 	// await is not mandatory when requesting banners,
+	// 	// but it will allow you to catch errors
+	// 	await window.CrazyGames.SDK.banner.requestBanner({
+	// 		id: "banner-container",
+	// 		width: 970,
+	// 		height: 90,
+	// 	});
+	// } catch (e) {
+	// 	console.log("Banner request error", e);
+	// }
+	// window.CrazyGames.SDK.ad.requestAd("midgame", callbacks);
 }
 
 export function draw() {
+	
 	background(0);
-	rect(225,25,550,550);
+	rect(225, 25, 550, 550);
 	if (scene == MENU) {
 		menuDraw();
 	} else if (scene == TIMETRIAL) {
@@ -192,7 +230,7 @@ export function draw() {
 		surviveDraw();
 	} else if (scene == SURVIVEOVER) {
 		surviveOverDraw();
-	} else if (scene == PAUSE){
+	} else if (scene == PAUSE) {
 		pauseDraw();
 	}
 }
@@ -203,9 +241,9 @@ function ttOverDraw() {
 	fill(255, 255, 255);
 	strokeWeight(2);
 	rectMode(CENTER);
-	rect(RINGWIDTH/2 + LEFTWALL, 260, 80, 20);
+	rect(RINGWIDTH / 2 + LEFTWALL, 260, 80, 20);
 	fill(0);
-	text("Score: " + score, RINGWIDTH/2 + LEFTWALL, 264)
+	text("Score: " + score, RINGWIDTH / 2 + LEFTWALL, 264)
 	pop();
 	for (let i = 0; i < ttOverButtons.length; i++) {
 		ttOverButtons[i].show();
@@ -221,7 +259,7 @@ function levelsDraw() {
 function menuDraw() {
 	textAlign(CENTER);
 	score = 0;
-	text("Saw Game :D", RINGWIDTH/2 + LEFTWALL, 100);
+	text("Saw Game :D", RINGWIDTH / 2 + LEFTWALL, 100);
 	for (let i = 0; i < menuButtons.length; i++) {
 		menuButtons[i].show();
 	}
@@ -258,7 +296,8 @@ function timeTrialDraw() {
 	pop();
 
 	if (saw.check(player.x, player.y)) {
-		saw.speed = 0;
+		saw.xSpeed = 0;
+		saw.ySpeed = 0;
 		saw.gotFar = false;
 		player.hasSaw = true;
 	}
@@ -278,6 +317,7 @@ function timeTrialDraw() {
 
 }
 
+
 function surviveDraw() {
 	// HURT TIMER STUFF
 	let hurtColor = color(255, 0, 0);
@@ -287,7 +327,7 @@ function surviveDraw() {
 	////////////////////
 	//How to get to the next stage
 	if (score >= stageBreaks[stage] && breatheTimer < 0) {
-		if (stage != COLUMNSTAGE || stage != BULLETSTAGE || stage != DREVILSTAGE) {
+		if (stage != COLUMNSTAGE && stage != BULLETSTAGE && stage != DREVILSTAGE && stage != TWINSTAGE) {
 			breatheTimer = 80;
 		}
 	}
@@ -317,18 +357,18 @@ function surviveDraw() {
 		}
 
 		let potentialPointCount = 0;
-		for(let i = 0; i < enemies.length; i++){
-			if(enemies[i].killable){
+		for (let i = 0; i < enemies.length; i++) {
+			if (enemies[i].killable) {
 				potentialPointCount++;
 			}
 		}
-		if (breatheTimer <= 0 && letChoose == false && (potentialPointCount + score < stageBreaks[stage] || stage == COLUMNSTAGE || stage == BULLETSTAGE || stage == DREVILSTAGE)) {
+		if (breatheTimer <= 0 && letChoose == false && (potentialPointCount + score < stageBreaks[stage] || stage == COLUMNSTAGE || stage == BULLETSTAGE || stage == DREVILSTAGE || stage == TWINSTAGE)) {
 			if (bosses.length <= 0) {
 				if (Math.random() > 0.5 && score >= stageBreaks[0]) {
 					spawn(spawnX, spawnY, BULLET);
 				} else {
 					if (stage > COLUMNSTAGE) {
-						if (Math.random() > 0.5) { 
+						if (Math.random() > 0.5) {
 							spawn(spawnX, spawnY, TRACER);
 						} else {
 							spawn(spawnX, spawnY, CHASER);
@@ -349,11 +389,11 @@ function surviveDraw() {
 						bosses[0].zigZagAttack();
 						ttTimer = 50;
 					}
-				}else if(bosses[0].type == BULLETSTORM){
+				} else if (bosses[0].type == BULLETSTORM) {
 					spawn(spawnX, spawnY, BULLET);
 					ttTimer = 18;
 					bosses[0].health -= 1;
-				}else if(bosses[0].type == DREVIL){
+				} else if (bosses[0].type == DREVIL) {
 					if (bosses[0].health >= 80) {
 						console.log("bash attack");
 						bosses[0].bashSlam();
@@ -362,7 +402,7 @@ function surviveDraw() {
 						console.log("criss attack");
 						bosses[0].theOldCrissCross();
 						ttTimer = 325;
-					} else if (bosses[0].health < 40){
+					} else if (bosses[0].health < 40) {
 						bosses[0].radiateAttack();
 						ttTimer = 15;
 					}
@@ -375,11 +415,26 @@ function surviveDraw() {
 	////////////////////
 	//Updates and shows
 	//saw
-	if (!player.hasSaw) { saw.show(); }
-	saw.update();
+	if (!player.hasSaw) {
+		saw.show();
+		saw.update();
+	}
+	for (let i = 0; i < fieldUpgrades.length; i++) {
+		fieldUpgrades[i].show(fieldUpgrades[i].x, fieldUpgrades[i].y);
+		fieldUpgrades[i].showDescription();
+		if (fieldUpgrades[i].check(player.x, player.y, player.w)) {
+			if (fieldUpgrades[i].type == MATCHALATTE || fieldUpgrades[i].type == LIGHTNING) {
+				fieldUpgrades[i].activate();
+			}
+			heldPowerups.push(fieldUpgrades[i]);
+			fieldUpgrades = [];
+			i = 0;
+		}
+	}
 	// saw checks
 	if (saw.check(player.x, player.y)) {
-		saw.speed = 0;
+		saw.xSpeed = 0;
+		saw.ySpeed = 0;
 		saw.gotFar = false;
 		player.hasSaw = true;
 		saw.hitOne = false;
@@ -422,7 +477,7 @@ function surviveDraw() {
 			}
 		}
 		if (!player.hasSaw || enemies[i].type == BULLET) {
-			if (enemies[i].check(saw.x, saw.y) ) {
+			if (enemies[i].check(saw.x, saw.y)) {
 				for (let i = 0; i < heldPowerups.length; i++) {
 					if (heldPowerups[i].type == RICOCHET && saw.hitOne == false && enemies.length >= 1) {
 						saw.hitOne = true;
@@ -458,10 +513,15 @@ function surviveDraw() {
 	}
 	//BOSS:
 	if (bosses.length > 0) {
-		bosses[0].show();
-		if(bosses[0].type == DREVIL){
-			for(let i = 0; i < enemies.length; i++){
-				if(dist(enemies[i].x, enemies[i].y, enemies[i].thisPattern[enemies[i].thisPattern.length-1].x, enemies[i].thisPattern[enemies[i].thisPattern.length-1].y) <= 20 && enemies[i].type == TRACER){
+		bosses.forEach(boss => {
+			boss.show();
+			if (boss.type == TWIN) {
+				boss.update();
+			}
+		});
+		if (bosses[0].type == DREVIL) {
+			for (let i = 0; i < enemies.length; i++) {
+				if (dist(enemies[i].x, enemies[i].y, enemies[i].thisPattern[enemies[i].thisPattern.length - 1].x, enemies[i].thisPattern[enemies[i].thisPattern.length - 1].y) <= 20 && enemies[i].type == TRACER) {
 					kill(enemies[i].id);
 				}
 			}
@@ -473,10 +533,16 @@ function surviveDraw() {
 
 	//Check the bosses health:
 	if (bosses.length > 0) {
-		if (bosses[0].health <= 0) {
-			bosses = [];
+		for (let i = bosses.length - 1; i >= 0; i--) { // Iterate backward to avoid index shifting
+			if (bosses[i].health <= 0) {
+				bosses.splice(i, 1); // Remove the boss at index `i`
+			}
+		}
+		if (bosses.length == 0) { // Check if all bosses are defeated
+			console.log("bosses cleared");
 			breatheTimer = 80;
 			enemies = [];
+			stage++; // Increment the stage
 		}
 	}
 	//////////////
@@ -485,7 +551,7 @@ function surviveDraw() {
 		fieldUpgrades[i].show(fieldUpgrades[i].x, fieldUpgrades[i].y);
 		fieldUpgrades[i].showDescription();
 		if (fieldUpgrades[i].check(player.x, player.y, player.w)) {
-			if (fieldUpgrades[i].type == MATCHALATTE || fieldUpgrades[i].type == LIGHTNING) {	
+			if (fieldUpgrades[i].type == MATCHALATTE || fieldUpgrades[i].type == LIGHTNING) {
 				fieldUpgrades[i].activate();
 			}
 			heldPowerups.push(fieldUpgrades[i]);
@@ -500,9 +566,13 @@ function surviveDraw() {
 					bosses.push(new Boss(COLUMNLORD));
 				} else if (stage == BULLETSTAGE) {
 					bosses.push(new Boss(BULLETSTORM));
-				} else if(stage == DREVILSTAGE){
+				} else if (stage == DREVILSTAGE) {
 					bosses.push(new Boss(DREVIL));
-				}else {
+				} else if (stage == TWINSTAGE) {
+					bosses.push(new Boss(TWIN, LEFTWALL + 100, CEILING + 100));
+					bosses.push(new Boss(TWIN, RIGHTWALL - 100, CEILING + 100));
+				}
+				else {
 					spawnTime -= 2;
 				}
 			}
@@ -511,7 +581,7 @@ function surviveDraw() {
 	let modifier = 0;
 	for (let i = 0; i < heldPowerups.length; i++) {
 		if (heldPowerups[i].isPerk) {
-			modifier += heldPowerups[i].w;
+			modifier += heldPowerups[i].w + 10;
 		}
 		heldPowerups[i].show(i * (heldPowerups[i].w + 5) + 15 + LEFTWALL - modifier, CEILING + 20);
 		if (heldPowerups[i].type == ONEUP) {
@@ -551,9 +621,9 @@ function surviveDraw() {
 	pop();
 	////////////
 	//When do i show the breathe timer text
-	if (breatheTimer > 0 && enemies.length == 0 && (score >= stageBreaks[stage] || stage == COLUMNSTAGE || stage == BULLETSTAGE || stage == DREVILSTAGE)) {
+	if (breatheTimer > 0 && enemies.length == 0 && (score >= stageBreaks[stage] || stage == COLUMNSTAGE || stage == BULLETSTAGE || stage == DREVILSTAGE || stage == TWINSTAGE)) {
 		push();
-		text("BREATHE", RINGWIDTH/2 + LEFTWALL, 200);
+		text("BREATHE", RINGWIDTH / 2 + LEFTWALL, 200);
 		pop();
 		breatheTimer--;
 		letChoose = true;
@@ -569,12 +639,12 @@ function surviveDraw() {
 			//Always spawn a health powerup
 			fieldUpgrades.push(new Powerup(RINGWIDTH / 2 + LEFTWALL + 205, 250, ONEUP));
 			// Filter out perks the player already holds
-			
+
 			// Add a random power-up as well
 			let randomPowerup = availablePowerUps[Math.floor(Math.random() * availablePowerUps.length)];
 			fieldUpgrades.push(new Powerup(RINGWIDTH / 2 + LEFTWALL - 75, 200, randomPowerup));
 
-			if(Math.random() > 0.3){
+			if (Math.random() > 0.3) {
 				let availablePerks = allPerks.filter(perk => {
 					return !heldPowerups.some(held => held.isPerk && held.type === perk);
 				});
@@ -582,14 +652,14 @@ function surviveDraw() {
 				if (availablePerks.length > 0) {
 					let randomPerk = availablePerks[Math.floor(Math.random() * availablePerks.length)];
 					//randomPerk = allPowerUps.length + 6;
-					
+
 					fieldUpgrades.push(new Powerup(RINGWIDTH / 2 + LEFTWALL + 75, 200, randomPerk, true));
-				}else{
+				} else {
 					// If no perks are available, add a random power-up
 					randomPowerup = availablePowerUps[Math.floor(Math.random() * availablePowerUps.length)];
 					fieldUpgrades.push(new Powerup(RINGWIDTH / 2 + LEFTWALL + 75, 200, randomPowerup));
 				}
-			}else{
+			} else {
 				randomPowerup = availablePowerUps[Math.floor(Math.random() * availablePowerUps.length)];
 				fieldUpgrades.push(new Powerup(RINGWIDTH / 2 + LEFTWALL + 75, 200, randomPowerup));
 			}
@@ -625,12 +695,12 @@ function surviveDraw() {
 	//Rectangles for pretty :)
 	push();
 	fill(0);
-	rect(0,0,(1000-550)/2,600);
+	rect(0, 0, (1000 - 550) / 2, 600);
 	rect(LEFTWALL, FLOOR, RINGWIDTH, 25);
 	rect(LEFTWALL, 0, RINGWIDTH, 25);
-	rect(RIGHTWALL, 0, (1000-550)/2,600);
+	rect(RIGHTWALL, 0, (1000 - 550) / 2, 600);
 	pop();
-	
+
 }
 
 function surviveOverDraw() {
@@ -639,16 +709,16 @@ function surviveOverDraw() {
 	fill(255, 255, 255);
 	strokeWeight(2);
 	rectMode(CENTER);
-	rect(RINGWIDTH/2 + LEFTWALL, 200, 80, 20);
+	rect(RINGWIDTH / 2 + LEFTWALL, 200, 80, 20);
 	fill(0);
-	text("Score: " + score, RINGWIDTH/2 + LEFTWALL, 206)
+	text("Score: " + score, RINGWIDTH / 2 + LEFTWALL, 206)
 	pop();
 	for (let i = 0; i < surviveOverButtons.length; i++) {
 		surviveOverButtons[i].show();
 	}
 }
 
-function pauseDraw(){
+function pauseDraw() {
 	text("PAUSED", 200, 200);
 }
 
@@ -737,20 +807,28 @@ export function keyPressed() {
 			}
 		}
 	}
-	if(keyCode === 69 && (scene == SURVIVE || scene == PAUSE)){
-		
-		if(scene == SURVIVE){
+	if (keyCode === 69 && (scene == SURVIVE || scene == PAUSE)) {
+
+		if (scene == SURVIVE) {
 			scene = PAUSE;
-		}else{
+		} else {
 			scene = SURVIVE;
 		}
 	}
-	if(keyCode === 70){
-		stage = DREVILSTAGE-1;
+	if (keyCode === 70) {
+		stage = DREVILSTAGE - 1;
 		score = stageBreaks[DREVILSTAGE] - 2;
 	}
 }
 
+/**
+ * 
+ * @param {number} x1 - x1 position of the first point 
+ * @param {number} y1 - y1 position of the first point
+ * @param {number} x2 - x2 position of the second point
+ * @param {number} y2 - y2 position of the second point
+ * @returns 
+ */
 export function goToward(x1, y1, x2, y2) {
 	let v1 = createVector(x1, y1);
 	let v2 = createVector(x2, y2);
@@ -761,12 +839,12 @@ export function goToward(x1, y1, x2, y2) {
 }
 
 export function equilateral(x, y, theta, size) {
-  triangle(
-    x + cos(theta) * size,
-    y + sin(theta) * size,
-    x + cos(theta + TAU/3) * size,
-    y + sin(theta + TAU/3) * size,
-    x + cos(theta - TAU/3) * size,
-    y + sin(theta - TAU/3) * size
-  );
+	triangle(
+		x + cos(theta) * size,
+		y + sin(theta) * size,
+		x + cos(theta + TAU / 3) * size,
+		y + sin(theta + TAU / 3) * size,
+		x + cos(theta - TAU / 3) * size,
+		y + sin(theta - TAU / 3) * size
+	);
 }

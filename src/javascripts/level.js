@@ -6,12 +6,12 @@ class Level {
     }
 
     show() {
-        for (i = 0; i < this.enemies.length; i++) {
-            enemies[i].show();
-            enemies[i].check(mouseX, mouseY);
-            //emenies[i].check();
-        }
-        for (i = 0; i < this.boxes.length; i++) {}
-        for (i = 0; i < this.barriers.length; i++) {}
+        // for (let i = 0; i < this.enemies.length; i++) {
+        //     enemies[i].show();
+        //     enemies[i].check(mouseX, mouseY);
+        //     //emenies[i].check();
+        // }
+        // for (i = 0; i < this.boxes.length; i++) {}
+        // for (i = 0; i < this.barriers.length; i++) {}
     }
 }

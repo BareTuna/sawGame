@@ -1,5 +1,5 @@
 import p5 from "p5";
-import { bosses, BREATHER, COLUMNSTAGE, DREVILSTAGE, heldPowerups, setHurtTimer, stage } from "./main";
+import { bosses, BREATHER, COLUMNSTAGE, DREVILSTAGE, heldPowerups, setHurtTimer, stage, TWINSTAGE, img } from "./main";
 
 const LEFTWALL = 225;
 const RIGHTWALL = 775;
@@ -44,9 +44,9 @@ show() {
             }
         }
     }
-    ellipse(this.x, this.y, this.w, this.w);
-    //imageMode(CENTER);
-    //image(img, this.x, this.y-15, this.w + 30, this.w + 30);
+    // ellipse(this.x, this.y, this.w, this.w);
+    imageMode(CENTER);
+    image(img, this.x, this.y-15, this.w + 30, this.w + 30);
     pop();
 
     for (let i = 0; i < this.lives; i++) {
@@ -106,7 +106,31 @@ update() {
         }
     }
 
+
+    if(stage == TWINSTAGE && bosses.length > 0){
+        bosses.forEach((boss) => {
+            if(dist(this.x,this.y, boss.x, boss.y) <= (75/2) + this.w/2){
+                let bossPos = createVector(boss.x, boss.y);
+                let playerPos = createVector(this.x, this.y);
+        
+                let dir = p5.Vector.sub(playerPos, bossPos);
+                dir.setMag((75/2)+1 + this.w/2);
     
+                this.x = bossPos.x + dir.x;
+                this.y = bossPos.y + dir.y;
+                if (this.lifeTimer == 0) {
+                    this.lives--;
+                    this.lifeTimer = 150;
+                    setHurtTimer(170);
+                    for (let i = 0; i < heldPowerups.length; i++) {
+                        if (heldPowerups[i].type == BREATHER) {
+                            this.lifeTimer += 75;
+                        }
+                    }
+                }
+            }
+        });
+    }
 }
 
 checkWalls() {

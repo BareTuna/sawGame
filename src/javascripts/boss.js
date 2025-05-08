@@ -1,12 +1,16 @@
-import { bosses, BULLETBARRIER, BULLETSTORM, CEILING, clearEnemies, COLUMNLORD, DREVIL, enemies, kill, LEFTWALL, RIGHTWALL, RINGHEIGHT, RINGWIDTH, spawn, TRACER } from "./main";
+import { bosses, BULLETBARRIER, BULLETSTORM, CEILING, clearEnemies, COLUMNLORD, DREVIL, enemies, kill, LEFTWALL, RIGHTWALL, RINGHEIGHT, RINGWIDTH, spawn, TRACER, TWIN, goToward, FLOOR} from "./main";
 
 export class Boss {
-    constructor(type) {
+    constructor(type, x = -1, y = -1) {
         this.type = type;
         this.toggle = false;
         this.health = 60;
-        this.x = 0;
-        this.y = 0;
+        this.x = x == -1 ? 0 : x;
+        this.y = y == -1 ? 0 : y;
+        this.targetX = 200;
+        this.targetY = 200;
+        this.xSpeed = 0;
+        this.ySpeed = 0;
         if (this.type == BULLETSTORM) {
             this.health = 130;
         }
@@ -14,6 +18,9 @@ export class Boss {
             this.health = 120;
             this.x = RINGWIDTH/2 + LEFTWALL;
             this.y = 0;
+        }
+        if (this.type == TWIN) {
+            this.health = 60;
         }
         this.radiateOffset = 0;
         this.radiateBreak = 50;
@@ -32,7 +39,6 @@ export class Boss {
             }
         }
         if(this.type == DREVIL){
-            
             push();
             fill(255);
             ellipse(this.x,this.y,150,150);
@@ -42,9 +48,38 @@ export class Boss {
             rect(this.x,this.y + 85, this.health, 10);
             pop();
         }
+        if(this.type == TWIN){
+            push();
+            fill(255);
+            ellipse(this.x,this.y,75,75);
+            rectMode(CENTER);
+            rect(this.x,this.y + 50, 60, 10);
+            fill(255,0,0);
+            rect(this.x,this.y + 50, this.health, 10);
+            pop();
+        }
     }
-    check() {
 
+    update(){
+        if(this.type == TWIN){
+            if(dist(this.x, this.y, this.targetX, this.targetY) >= 110){
+                let v2 = goToward(this.x, this.y, this.targetX, this.targetY);
+                this.xSpeed = v2.x;
+                this.ySpeed = v2.y;
+            }else{
+                let randomDirection = random(0, TWO_PI);
+                this.targetX = constrain(this.x + cos(randomDirection) * 400, LEFTWALL + 75, RIGHTWALL - 75);
+                this.targetY = constrain(this.y + sin(randomDirection) * 400, CEILING + 75, FLOOR - 75);
+                // while(this.targetX < LEFTWALL + 75 || this.targetX > RIGHTWALL - 75 || this.targetY < CEILING + 75 || this.targetY > FLOOR - 75){
+                //     randomDirection = random(0, TWO_PI);
+                //     this.targetX = this.x + cos(randomDirection) * 400;
+                //     this.targetY = this.y + sin(randomDirection) * 400;
+                //     console.log("Stuck :(")
+                // }
+            }
+            this.x += this.xSpeed;
+            this.y += this.ySpeed;
+        }
     }
 
     attack() {

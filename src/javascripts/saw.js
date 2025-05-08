@@ -1,5 +1,5 @@
 import p5 from "p5";
-import { bosses, CEILING, COLUMNLORD, COLUMNSTAGE, DREVILSTAGE, FLOOR, goToward, heldPowerups, LEFTWALL, LIGHTNING, MOLASSES, player, RIGHTWALL, stage, TBOUNCE } from "./main";
+import { bosses, CEILING, COLUMNLORD, COLUMNSTAGE, DREVILSTAGE, FLOOR, goToward, heldPowerups, LEFTWALL, LIGHTNING, MOLASSES, player, RIGHTWALL, stage, TBOUNCE, TWIN, TWINSTAGE, gleeby } from "./main";
 
 export class Saw {
 	constructor(x, y, isBlaster = false, ttl = -1) {
@@ -81,6 +81,64 @@ export class Saw {
 			}
 			this.hit = true;
 		}
+
+		if(stage == TWINSTAGE && bosses.length > 0) {
+			bosses.forEach(boss => {
+				if (dist(this.x, this.y, boss.x, boss.y) < (75 / 2) + (this.w / 2)) {
+					let bossPosition = createVector(boss.x, boss.y);
+					let sawPosition = createVector(this.x, this.y);
+					let sawVelocity = createVector(this.xSpeed, this.ySpeed);
+					let bossVelocity = createVector(boss.xSpeed || 0, boss.ySpeed || 0); // Default to 0 if boss velocity is undefined
+
+					// Adjust saw position to avoid overlap
+					let line = p5.Vector.sub(sawPosition, bossPosition);
+					line.setMag((75 / 2) + (this.w / 2));
+					line.add(bossPosition);
+					this.x = line.x;
+					this.y = line.y;
+
+					// Compute the relative velocity (saw velocity relative to the boss)
+					let relativeVelocity = p5.Vector.sub(sawVelocity, bossVelocity);
+
+					// Compute the normal vector from the boss center to the saw
+					let normalVector = p5.Vector.sub(sawPosition, bossPosition).normalize();
+
+					// Reflect the relative velocity over the normal vector
+					let dot = relativeVelocity.dot(normalVector);
+					let scaledNormal = normalVector.copy().mult(2 * dot);
+					let reflection = createVector(
+						relativeVelocity.x - scaledNormal.x,
+						relativeVelocity.y - scaledNormal.y
+					);
+
+					// Add the boss's velocity back to the reflected velocity
+					reflection.add(bossVelocity);
+
+					// Reduce the speed of the reflection for balance
+					reflection.mult(0.5);
+
+					// Set the new velocity
+					this.setSpeed(reflection.x, reflection.y);
+
+					// Reduce the boss's health
+					boss.health -= 2;
+				}
+				this.hit = true;
+			});
+		}
+
+		bosses.forEach((boss) => {
+			if(dist(this.x,this.y, boss.x, boss.y) <= (75/2) + this.w/2){
+				let bossPos = createVector(boss.x, boss.y);
+				let sawPos = createVector(this.x, this.y);
+		
+				let dir = p5.Vector.sub(sawPos, bossPos);
+				dir.setMag((75/2)+1 + this.w/2);
+	
+				this.x = bossPos.x + dir.x;
+				this.y = bossPos.y + dir.y;
+			}
+		});
 		this.x += this.xSpeed;
 		this.y += this.ySpeed;
 
@@ -161,8 +219,10 @@ export class Saw {
 			pop();
 		} else {
 			push();
-			fill(200, 255, 200);
-			ellipse(this.x, this.y, 20 * 1.375, 20 * 1.375);
+			// fill(200, 255, 200);
+			// ellipse(this.x, this.y, 20 * 1.375, 20 * 1.375);
+			imageMode(CENTER);
+			image(gleeby, this.x, this.y-15, this.w + 25, this.w + 25);
 			pop();
 		}
 	}
