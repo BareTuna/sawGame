@@ -97,7 +97,7 @@ let menuButtons = [new Button(RINGWIDTH / 2 + LEFTWALL, 200, 150, 25, "Time tria
 
 	blasters = [];
 	stage = 0;
-	player.lives = 5;
+	player.lives = 1;
 	hurtTimer = 0;
 	bosses = [];
 })];
@@ -158,7 +158,11 @@ export const TWINSTAGE = 19;
 let ttTimer = 0;
 let spawnTime = 50;
 let breatheTimer = 0;
-
+const callbacks = {
+	adFinished: () => console.log("End midgame ad"),
+	adError: (error) => console.log("Error midgame ad", error),
+	adStarted: () => console.log("Start midgame ad"),
+};
 export let stage = 5;
 export let heldPowerups = [new Powerup(200, 200, BLASTER)];
 let fieldUpgrades = [];
@@ -172,10 +176,37 @@ export let bosses = [];
 export let img;
 export let gleeby;
 // let testBoss = new Boss(COLUMNLORD);
+export let gleebySprites = {
+	"spriteSheetFilePath" : "src/images/testGleebySpriteSheet.png",
+	"spriteCount" : 4,
+	"spriteWidth" : 200,
+	"spriteHeight" : 200,
+	"imageArray" : [],
+	"spriteSheet" : null,
+	"load" : function() {
+		this.spriteSheet = loadImage(this.spriteSheetFilePath, () => {
+			console.log("Sprite sheet loaded successfully");
+			this.loadSpriteArray();
+		}, () => {
+			console.error("Failed to load sprite sheet");
+		});
+	},
+	"loadSpriteArray" : function() {
+		for(let j = 0; j < Math.floor(this.spriteCount / 4); j++){
+			for (let i = 0; i < this.spriteCount; i++){
+				this.imageArray.push(this.spriteSheet.get(i * this.spriteWidth, j * this.spriteHeight,200,200));
+			}
+		}
+	}
+}
+
 export function preload() {
 	img = loadImage('src/images/cowboyTest.png');
 	gleeby = loadImage('src/images/AlienGuy.png');
+	gleebySprites.load();
 }
+
+
 
 export async function setup() {
 	const myCanvas = createCanvas(1000, 600);
@@ -195,11 +226,7 @@ export async function setup() {
 
 	
 
-	// const callbacks = {
-	// 	adFinished: () => console.log("End midgame ad"),
-	// 	adError: (error) => console.log("Error midgame ad", error),
-	// 	adStarted: () => console.log("Start midgame ad"),
-	// };
+	
 	// try {
 	// 	// await is not mandatory when requesting banners,
 	// 	// but it will allow you to catch errors
@@ -211,11 +238,17 @@ export async function setup() {
 	// } catch (e) {
 	// 	console.log("Banner request error", e);
 	// }
-	// window.CrazyGames.SDK.ad.requestAd("midgame", callbacks);
 }
+let dinkle = 0;
 
 export function draw() {
-	
+	background(0);
+    // if (gleebySprites.imageArray.length > 0) {
+    //     image(gleebySprites.imageArray[Math.floor(dinkle/20) % gleebySprites.spriteCount], 100, 100, 50, 50); // Draw the first sprite
+    // } else {
+    //     console.error("Sprite array is empty");
+    // }
+	// dinkle++;
 	background(0);
 	rect(225, 25, 550, 550);
 	if (scene == MENU) {
@@ -466,6 +499,8 @@ function surviveDraw() {
 				if (player.lives <= 0) {
 					player.lifeTimer = 0;
 					scene = SURVIVEOVER;
+					// window.CrazyGames.SDK.ad.requestAd("midgame", callbacks);
+
 				}
 				for (let i = 0; i < heldPowerups.length; i++) {
 					if (heldPowerups[i].type == PRICKLY) {

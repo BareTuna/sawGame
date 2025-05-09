@@ -1,5 +1,5 @@
 import p5 from "p5";
-import { bosses, CEILING, COLUMNLORD, COLUMNSTAGE, DREVILSTAGE, FLOOR, goToward, heldPowerups, LEFTWALL, LIGHTNING, MOLASSES, player, RIGHTWALL, stage, TBOUNCE, TWIN, TWINSTAGE, gleeby } from "./main";
+import { bosses, CEILING, COLUMNLORD, COLUMNSTAGE, DREVILSTAGE, FLOOR, goToward, heldPowerups, LEFTWALL, LIGHTNING, MOLASSES, player, RIGHTWALL, stage, TBOUNCE, TWIN, TWINSTAGE, gleeby, gleebySprites } from "./main";
 
 export class Saw {
 	constructor(x, y, isBlaster = false, ttl = -1) {
@@ -16,6 +16,8 @@ export class Saw {
 		this.hitOne = false;
 		this.hitCount = 0;
 		this.defaultSpeed = 13;
+		this.animationTimer = 0;
+		this.animationIndex = 0;
 	}
 	update() {
 		let hit = false;
@@ -56,12 +58,12 @@ export class Saw {
 			}
 		}
 		if (stage == DREVILSTAGE && bosses.length > 0) {
-			if (dist(this.x, this.y, bosses[0].x, bosses[0].y) < (150 / 2) + (this.w/2)) {
+			if (dist(this.x, this.y, bosses[0].x, bosses[0].y) < (150 / 2) + (this.w / 2)) {
 				let bossPosition = createVector(bosses[0].x, bosses[0].y);
 				let sawPosition = createVector(this.x, this.y);
 				let sawVelocity = createVector(this.xSpeed, this.ySpeed);
 				let line = p5.Vector.sub(sawPosition, bossPosition);
-				line.setMag((150 / 2) + (this.w/2));
+				line.setMag((150 / 2) + (this.w / 2));
 				line.add(bossPosition);
 				this.x = line.x;
 				this.y = line.y;
@@ -82,7 +84,7 @@ export class Saw {
 			this.hit = true;
 		}
 
-		if(stage == TWINSTAGE && bosses.length > 0) {
+		if (stage == TWINSTAGE && bosses.length > 0) {
 			bosses.forEach(boss => {
 				if (dist(this.x, this.y, boss.x, boss.y) < (75 / 2) + (this.w / 2)) {
 					let bossPosition = createVector(boss.x, boss.y);
@@ -128,13 +130,13 @@ export class Saw {
 		}
 
 		bosses.forEach((boss) => {
-			if(dist(this.x,this.y, boss.x, boss.y) <= (75/2) + this.w/2){
+			if (dist(this.x, this.y, boss.x, boss.y) <= (75 / 2) + this.w / 2) {
 				let bossPos = createVector(boss.x, boss.y);
 				let sawPos = createVector(this.x, this.y);
-		
+
 				let dir = p5.Vector.sub(sawPos, bossPos);
-				dir.setMag((75/2)+1 + this.w/2);
-	
+				dir.setMag((75 / 2) + 1 + this.w / 2);
+
 				this.x = bossPos.x + dir.x;
 				this.y = bossPos.y + dir.y;
 			}
@@ -191,7 +193,7 @@ export class Saw {
 					if (closest.wall == "LEFT") this.x = LEFTWALL + this.w / 2;
 					if (closest.wall == "FLOOR") this.y = FLOOR - this.w / 2;
 					if (closest.wall == "CEILING") this.y = CEILING + this.w / 2;
-					
+
 					this.xSpeed = 0;
 					this.ySpeed = 0;
 				}
@@ -219,11 +221,28 @@ export class Saw {
 			pop();
 		} else {
 			push();
+			angleMode(RADIANS)
 			// fill(200, 255, 200);
 			// ellipse(this.x, this.y, 20 * 1.375, 20 * 1.375);
 			imageMode(CENTER);
-			image(gleeby, this.x, this.y-15, this.w + 25, this.w + 25);
+			translate(this.x, this.y);
+			let angle = atan2(this.ySpeed, this.xSpeed);
+			// console.log("Angle in radians:", angle);
+			rotate(angle - PI / 2);
+			// console.log(gleebySprites.imageArray[this.animationIndex]);
+			image(gleebySprites.imageArray[this.animationIndex], 0, 0, this.w + 25, this.w + 25);
 			pop();
+		}
+		this.animationTimer++;
+		this.frameRate = map(createVector(this.xSpeed, this.ySpeed).mag(), 0, 13, 20, 5)
+		console.log(createVector(this.xSpeed, this.ySpeed).mag());
+		if (this.animationTimer >= this.frameRate) {
+			this.animationTimer = 0;
+			this.animationIndex++;
+			if (this.animationIndex >= gleebySprites.imageArray.length - 1) {
+				this.animationIndex = 0;
+			}
+
 		}
 	}
 	setSpeed(x, y) {
