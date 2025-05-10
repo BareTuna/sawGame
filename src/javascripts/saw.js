@@ -122,8 +122,13 @@ export class Saw {
 					// Set the new velocity
 					this.setSpeed(reflection.x, reflection.y);
 
+					this.x += this.xSpeed;
+					this.y += this.ySpeed;
 					// Reduce the boss's health
-					boss.health -= 2;
+					let speedVector = createVector(this.xSpeed, this.ySpeed);
+					if(speedVector.mag() > 2) {
+						boss.health -= 5;
+					}
 				}
 				this.hit = true;
 			});
@@ -215,9 +220,22 @@ export class Saw {
 			pop();
 		}
 		if (this.isBlaster) {
+			// push();
+			// fill(200, 200, 255);
+			// ellipse(this.x, this.y, 20 * 1.375, 20 * 1.375);
+			// pop();
 			push();
-			fill(200, 200, 255);
-			ellipse(this.x, this.y, 20 * 1.375, 20 * 1.375);
+			// filter(POSTERIZE, 2);
+			angleMode(RADIANS)
+			// fill(200, 255, 200);
+			// ellipse(this.x, this.y, 20 * 1.375, 20 * 1.375);
+			imageMode(CENTER);
+			translate(this.x, this.y);
+			let angle = atan2(this.ySpeed, this.xSpeed);
+			// console.log("Angle in radians:", angle);
+			rotate(angle - PI / 2);
+			// console.log(gleebySprites.imageArray[this.animationIndex]);
+			image(gleebySprites.imageArray[this.animationIndex], 0, 0, this.w + 5, this.w + 5);
 			pop();
 		} else {
 			push();
@@ -230,15 +248,15 @@ export class Saw {
 			// console.log("Angle in radians:", angle);
 			rotate(angle - PI / 2);
 			// console.log(gleebySprites.imageArray[this.animationIndex]);
-			image(gleebySprites.imageArray[this.animationIndex], 0, 0, this.w + 25, this.w + 25);
+			image(gleebySprites.imageArray[this.animationIndex], 0, 0, this.w + 20, this.w + 20);
 			pop();
 		}
 		this.animationTimer++;
-		this.frameRate = map(createVector(this.xSpeed, this.ySpeed).mag(), 0, 13, 20, 5)
-		console.log(createVector(this.xSpeed, this.ySpeed).mag());
+		this.frameRate = map(createVector(this.xSpeed, this.ySpeed).mag(), 0, 13, 20, 3) * 0.8;
+		// console.log(createVector(this.xSpeed, this.ySpeed).mag());
 		if (this.animationTimer >= this.frameRate) {
 			this.animationTimer = 0;
-			this.animationIndex++;
+			this.animationIndex += 1;
 			if (this.animationIndex >= gleebySprites.imageArray.length - 1) {
 				this.animationIndex = 0;
 			}

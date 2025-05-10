@@ -63,7 +63,7 @@ let stageBreaks = [10, 25, 40, 55, 56, 70, 85, 100, 115, 116, 130, 145, 160, 175
 // let stageBreaks = [0, 3, 40, 55, COLUMNSTAGE, 70, 85, 90, 105, 120, 135, 150, 165, 180];
 // let stageBreaks = [0, BULLETSTAGE, 25, 40, 55, 70, 85, 90, 105, COLUMNSTAGE, 120, 135, 150, 165, 180];
 
-const allPerks = [PRICKLY, MOLASSES, MATCHALATTE, BREATHER, TBOUNCE];
+const allPerks = [PRICKLY, MOLASSES, MATCHALATTE, BREATHER, TBOUNCE, LIGHTNING];
 //boss types
 export const COLUMNLORD = 0;
 export const BULLETSTORM = 1;
@@ -177,12 +177,13 @@ export let img;
 export let gleeby;
 // let testBoss = new Boss(COLUMNLORD);
 export let gleebySprites = {
-	"spriteSheetFilePath" : "src/images/testGleebySpriteSheet.png",
-	"spriteCount" : 4,
+	"spriteSheetFilePath" : "src/images/ColoredTransparentGleebyv1.png",
+	"spriteCount" : 8,
 	"spriteWidth" : 200,
 	"spriteHeight" : 200,
 	"imageArray" : [],
 	"spriteSheet" : null,
+	"spritesPerRow" : 4,
 	"load" : function() {
 		this.spriteSheet = loadImage(this.spriteSheetFilePath, () => {
 			console.log("Sprite sheet loaded successfully");
@@ -192,9 +193,12 @@ export let gleebySprites = {
 		});
 	},
 	"loadSpriteArray" : function() {
-		for(let j = 0; j < Math.floor(this.spriteCount / 4); j++){
-			for (let i = 0; i < this.spriteCount; i++){
-				this.imageArray.push(this.spriteSheet.get(i * this.spriteWidth, j * this.spriteHeight,200,200));
+		for(let j = 0; j < (this.spriteCount / 5); j++){
+			for (let i = 0; i < this.spritesPerRow; i++){
+				if(this.imageArray.length >= this.spriteCount){
+					return;
+				}
+				this.imageArray.push(this.spriteSheet.get(i * this.spriteWidth, j * this.spriteHeight,this.spriteWidth,this.spriteHeight));
 			}
 		}
 	}
@@ -577,7 +581,6 @@ function surviveDraw() {
 			console.log("bosses cleared");
 			breatheTimer = 80;
 			enemies = [];
-			stage++; // Increment the stage
 		}
 	}
 	//////////////
@@ -604,8 +607,8 @@ function surviveDraw() {
 				} else if (stage == DREVILSTAGE) {
 					bosses.push(new Boss(DREVIL));
 				} else if (stage == TWINSTAGE) {
-					bosses.push(new Boss(TWIN, LEFTWALL + 100, CEILING + 100));
-					bosses.push(new Boss(TWIN, RIGHTWALL - 100, CEILING + 100));
+					bosses.push(new Boss(TWIN, LEFTWALL + 200, CEILING - 110));
+					bosses.push(new Boss(TWIN, RIGHTWALL - 200, CEILING - 110));
 				}
 				else {
 					spawnTime -= 2;
@@ -788,7 +791,7 @@ export function mousePressed() {
 }
 
 export function kill(j) {
-	if ((enemies[j].type == CHASER || enemies[j].type == STANDER || enemies[j].type == TRACER || enemies[j].type == FROG) && enemies[j].killable) {
+	if ((enemies[j].type == CHASER || enemies[j].type == STANDER || enemies[j].type == TRACER || enemies[j].type == FROG) && enemies[j].killable && stage != TWINSTAGE) {
 		score++;
 	}
 	enemies.splice(j, 1);
